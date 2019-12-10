@@ -8,8 +8,6 @@ public class ARCursor : MonoBehaviour
     public float maxCursorRange = 20;
     #endregion
 
-    
-
     #region Private Fields
     Transform cursorInstanceTransform;
     Camera mainCamera;
