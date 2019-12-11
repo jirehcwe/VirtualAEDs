@@ -6,6 +6,12 @@ public class ARCursor : MonoBehaviour
     #region Public Fields
     public GameObject cursorPrefab;
     public float maxCursorRange = 20;
+    
+    public Vector3 position
+    {
+        get;
+        private set;
+    }
     #endregion
 
     #region Private Fields
@@ -30,6 +36,7 @@ public class ARCursor : MonoBehaviour
         Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.green);
         if (Physics.Raycast(cameraRay, out hit, maxCursorRange))
         {
+            position = hit.point;
             if (cursorInstanceTransform == null)
             {
                 SetupCursorObject(hit.point.x, hit.point.y, hit.point.z);
@@ -44,7 +51,7 @@ public class ARCursor : MonoBehaviour
             {
                 Destroy(cursorInstanceTransform.gameObject);
             }
-
+            position = Vector3.zero;
         }
     }
 
