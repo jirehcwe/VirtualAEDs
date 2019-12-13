@@ -2,37 +2,25 @@
 
 [RequireComponent(typeof(ARCursor))]
 [RequireComponent(typeof(LineRenderer))]
-public class ARObjectPlacer : MonoBehaviour
+public class ARWallPlacer : MonoBehaviour
 {
-    enum PlaceMode{
-        Walls,
-        AED,
-        Victim
-    }
 
     #region Public Fields
+
     public GameObject wallPrefab;
+
     public float defaultWallHeight = 3;
-
-    public GameObject AEDPrefab;
-
-    public GameObject victimPrefab;
     #endregion
 
     #region Private Fields
-    private LineRenderer lineRend;
-    private ARCursor cursor;
-    private Transform wallParent;
+    LineRenderer lineRend;
+    ARCursor cursor;
+    Transform wallParent;
     #endregion
 
     void Start()
     {
-        lineRend = GetComponent<LineRenderer>();
-        lineRend.useWorldSpace = true;
-        lineRend.positionCount = 0;
-        lineRend.startWidth = 0.1f;
-        lineRend.endWidth = 0.1f;
-
+        WallPlacementSetup();
         cursor = GetComponent<ARCursor>();
     }
 
@@ -54,10 +42,24 @@ public class ARObjectPlacer : MonoBehaviour
     }
 
     #region Wall Placement Methods
+
+    void WallPlacementSetup(){
+        lineRend = GetComponent<LineRenderer>();
+        lineRend.useWorldSpace = true;
+        lineRend.positionCount = 0;
+        lineRend.startWidth = 0.1f;
+        lineRend.endWidth = 0.1f;
+    }
+
     public void AddPoint()
     {
         lineRend.positionCount++;
-        lineRend.SetPosition(lineRend.positionCount - 1, cursor.position);
+        if (cursor.position != Vector3.zero)
+        {
+            lineRend.SetPosition(lineRend.positionCount - 1, cursor.position);
+        } else {
+            // no cursor position found, default is zero. do not add.
+        }
     }
 
     public void BuildWalls()
@@ -75,6 +77,7 @@ public class ARObjectPlacer : MonoBehaviour
 
     void PlaceWall(Vector3 start, Vector3 end, Transform parent = null)
     {
+        // could have used transform.forward etc tbh...
         Vector3 midpoint = (start+end)/2;
         float xDelta = start.x - end.x;
         float zDelta = start.z - end.z;
@@ -100,5 +103,6 @@ public class ARObjectPlacer : MonoBehaviour
         wallT.localScale = new Vector3(length, defaultWallHeight, length);
     }
     #endregion
-    
+
+
 }

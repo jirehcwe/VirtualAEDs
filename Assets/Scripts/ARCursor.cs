@@ -6,22 +6,17 @@ public class ARCursor : MonoBehaviour
     #region Public Fields
     public GameObject cursorPrefab;
     public float maxCursorRange = 20;
-    
-    public Vector3 position
-    {
-        get;
-        private set;
-    }
+    public Vector3 position;
+    public Transform other;
+    public Vector3 hitNormal;
     #endregion
 
     #region Private Fields
     Transform cursorInstanceTransform;
-    Camera mainCamera;
     #endregion
 
     void Start()
     {
-        mainCamera = Camera.main;
         SetupCursorObject();
     }
 
@@ -36,6 +31,7 @@ public class ARCursor : MonoBehaviour
         Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.green);
         if (Physics.Raycast(cameraRay, out hit, maxCursorRange))
         {
+            hitNormal = hit.normal;
             position = hit.point;
             if (cursorInstanceTransform == null)
             {
@@ -44,6 +40,9 @@ public class ARCursor : MonoBehaviour
             {
                 cursorInstanceTransform.position = hit.point;
             }
+
+            //Assigning hit object's transform to other
+            other = hit.transform;
             
         } else
         {
@@ -51,6 +50,9 @@ public class ARCursor : MonoBehaviour
             {
                 Destroy(cursorInstanceTransform.gameObject);
             }
+
+            //Dereferencing other transform
+            other = null;
             position = Vector3.zero;
         }
     }

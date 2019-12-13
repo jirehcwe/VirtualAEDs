@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 public class ARLightEstimator : MonoBehaviour
 {
-    public Light m_Light;
+    public List<Light> lightList;
 
     [SerializeField]
     [Tooltip("The ARCameraManager which will produce frame events containing light estimation information.")]
@@ -38,10 +40,12 @@ public class ARLightEstimator : MonoBehaviour
 
     void Awake ()
     {
-        if (m_Light == null)
+        if (lightList == null)
         {
             Debug.LogError("No Light object found!");
         }
+
+        lightList = this.transform.GetComponentsInChildren<Light>().OfType<Light>().ToList();
     }
 
     void OnEnable()
@@ -58,22 +62,25 @@ public class ARLightEstimator : MonoBehaviour
 
     void FrameChanged(ARCameraFrameEventArgs args)
     {
-        if (args.lightEstimation.averageBrightness.HasValue)
+        foreach (Light light in lightList)
         {
-            brightness = args.lightEstimation.averageBrightness.Value;
-            m_Light.intensity = brightness.Value;
-        }
+            if (args.lightEstimation.averageBrightness.HasValue)
+            {
+                brightness = args.lightEstimation.averageBrightness.Value;
+                light.intensity = brightness.Value;
+            }
 
-        if (args.lightEstimation.averageColorTemperature.HasValue)
-        {
-            colorTemperature = args.lightEstimation.averageColorTemperature.Value;
-            m_Light.colorTemperature = colorTemperature.Value;
-        }
-        
-        if (args.lightEstimation.colorCorrection.HasValue)
-        {
-            colorCorrection = args.lightEstimation.colorCorrection.Value;
-            m_Light.color = colorCorrection.Value;
+            if (args.lightEstimation.averageColorTemperature.HasValue)
+            {
+                colorTemperature = args.lightEstimation.averageColorTemperature.Value;
+                light.colorTemperature = colorTemperature.Value;
+            }
+            
+            if (args.lightEstimation.colorCorrection.HasValue)
+            {
+                colorCorrection = args.lightEstimation.colorCorrection.Value;
+                light.color = colorCorrection.Value;
+            }
         }
     }
 }
