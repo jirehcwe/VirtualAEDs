@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Unity.Collections;
@@ -155,6 +156,8 @@ public class ARWorldMapController : MonoBehaviour
         request.Dispose();
 
         SaveAndDisposeWorldMap(worldMap);
+        ARSaveData saveData = new ARSaveData(currentActiveMap, ARObjectManager.objectList);
+        ARSaveDataManager.SaveNewMapObjects(saveData);
     }
 
     IEnumerator Load()
@@ -207,6 +210,7 @@ public class ARWorldMapController : MonoBehaviour
 
         Log("Apply ARWorldMap to current session.");
         sessionSubsystem.ApplyWorldMap(worldMap);
+        
     }
 
     void SaveAndDisposeWorldMap(ARWorldMap worldMap)
@@ -225,11 +229,16 @@ public class ARWorldMapController : MonoBehaviour
     }
 #endif
 
+    public string currentActiveMap;
+
     string path
     {
         get
         {
-            return Path.Combine(Application.persistentDataPath, "my_session.worldmap");
+            if (!String.IsNullOrEmpty(currentActiveMap))
+                return Path.Combine(Application.persistentDataPath, currentActiveMap);
+            else
+                return null;
         }
     }
 

@@ -2,6 +2,12 @@
 
 public class ARObjectMetadata : ScriptableObject
 {
-    public Transform transform;
+    public Transform transformData;
     public ARObjectType objectType;
+
+    public ARObjectMetadata(Transform t, ARObjectType objType)
+    {
+        transformData = t;
+        objectType = objType;
+    }
 }

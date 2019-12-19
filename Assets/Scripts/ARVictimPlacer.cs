@@ -7,7 +7,7 @@ public class ARVictimPlacer : MonoBehaviour
 
     #region Public Fields
     public GameObject victimPrefab;
-    public UnityEvent CreateVictim;
+    public static ARObjectPlacedEvent PlaceVictim;
     #endregion
 
     #region Private Fields
@@ -23,7 +23,7 @@ public class ARVictimPlacer : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
-            PlaceVictim();
+            InstantiateVictim();
         }
     }
 
@@ -37,14 +37,14 @@ public class ARVictimPlacer : MonoBehaviour
         }
     }
 
-    public void PlaceVictim(){
+    public void InstantiateVictim(){
         if (cursor.position != Vector3.zero){
 
-            Instantiate(victimPrefab, cursor.position, Quaternion.identity);
+            GameObject victim = Instantiate(victimPrefab, cursor.position, Quaternion.identity);
             
-            if (CreateVictim != null)
+            if (PlaceVictim != null)
             {
-                CreateVictim.Invoke();
+                PlaceVictim.Invoke(victim.transform, ARObjectType.Victim);
             }
             
         }

@@ -10,6 +10,8 @@ public class ARWallPlacer : MonoBehaviour
     public GameObject wallPrefab;
 
     public float defaultWallHeight = 3;
+
+    public static ARObjectPlacedEvent PlaceWall;
     #endregion
 
     #region Private Fields
@@ -71,11 +73,11 @@ public class ARWallPlacer : MonoBehaviour
 
         for (int point = 0; point < lineRend.positionCount-1 ; point++)
         {
-            PlaceWall(lineRend.GetPosition(point), lineRend.GetPosition(point + 1), wallParent);
+            InstantiateWall(lineRend.GetPosition(point), lineRend.GetPosition(point + 1), wallParent);
         }
     }
 
-    void PlaceWall(Vector3 start, Vector3 end, Transform parent = null)
+    void InstantiateWall(Vector3 start, Vector3 end, Transform parent = null)
     {
         // could have used transform.forward etc tbh...
         Vector3 midpoint = (start+end)/2;
@@ -101,6 +103,12 @@ public class ARWallPlacer : MonoBehaviour
         Transform wallT = Instantiate(wallPrefab, midpoint, wallRotation, parent).transform;
         float length = (start-end).magnitude;
         wallT.localScale = new Vector3(length, defaultWallHeight, length);
+
+
+        if (PlaceWall != null)
+        {
+            PlaceWall.Invoke(wallT, ARObjectType.Wall);
+        }
     }
     #endregion
 

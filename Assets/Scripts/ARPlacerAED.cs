@@ -6,6 +6,7 @@ public class ARPlacerAED : MonoBehaviour
 
     #region Public Fields
     public GameObject aedPrefab;
+    public static ARObjectPlacedEvent PlaceAED;
     #endregion
 
     #region Private Fields
@@ -21,7 +22,7 @@ public class ARPlacerAED : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E)){
-            PlaceAED();
+            InstantiateAED();
         }
     }
 
@@ -35,7 +36,7 @@ public class ARPlacerAED : MonoBehaviour
         }
     }
 
-    public void PlaceAED(){
+    public void InstantiateAED(){
         if (cursor.other != null)
         {
             GameObject newAED = Instantiate(aedPrefab, cursor.position, Quaternion.identity);
@@ -49,6 +50,11 @@ public class ARPlacerAED : MonoBehaviour
             //     newAED.transform.forward = newAED.transform.TransformVector(cursor.other.InverseTransformVector(-cursor.other.forward));
             // }
             newAED.transform.LookAt(newAED.transform.position - cursor.hitNormal);
+            
+            if (PlaceAED != null)
+            {
+                PlaceAED.Invoke(newAED.transform, ARObjectType.AED);
+            }
         }
         
     }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CardiacEventListener : MonoBehaviour
+public class CreatedVictimEventButtonRegistrar : MonoBehaviour
 {
 
     #region Public Fields
@@ -10,20 +10,22 @@ public class CardiacEventListener : MonoBehaviour
     #endregion
 
     #region Private Fields
-    ARVictimPlacer victimPlacer;
     #endregion
+    void OnDisable()
+    {
+        ARVictimPlacer.PlaceVictim.RemoveListener(this.RegisterCardiacToButton);
+    }
 
     void Start()
     {
-        victimPlacer = FindObjectOfType<ARVictimPlacer>();
-        if (victimPlacer == null){
-            Debug.Log("huh");
+        if (ARVictimPlacer.PlaceVictim == null){
+            Debug.Log("AR Victim Placer not found.");
         }
         cardiacToggleButton.interactable = false;
-        victimPlacer.CreateVictim.AddListener(this.RegisterCardiacToButton);
+        ARVictimPlacer.PlaceVictim.AddListener(this.RegisterCardiacToButton);
     }
 
-    void RegisterCardiacToButton()
+    void RegisterCardiacToButton(Transform transform, ARObjectType objectType)
     {
         placeVictimButton.interactable = false;
         cardiacToggleButton.interactable = true;
