@@ -5,36 +5,48 @@ public class ARSaveDataManager : MonoBehaviour
 {
     const string FIXED_SAVEDATA_FILENAME = "worldmaplist.json";
 
-    public static ARWorldMetadata GetAllWorlds()
+    public static ARWorldList GetAllWorlds()
     {
-        ARWorldMetadata worldList = null;
+        ARWorldList worldList = null;
         string savedatapath = Path.Combine(Application.persistentDataPath, FIXED_SAVEDATA_FILENAME);
         if (File.Exists(savedatapath))
         {
-            worldList = JsonUtility.FromJson<ARWorldMetadata>(File.ReadAllText(savedatapath));
+            worldList = JsonUtility.FromJson<ARWorldList>(File.ReadAllText(savedatapath));
         } else
         {
-            return new ARWorldMetadata();
+            return new ARWorldList();
         }
 
         return worldList;
     }
 
-    public static ARSaveData GetWorld(string worldName)
+    public static void SetAllWorlds(ARWorldList worldList)
+    {   
+        string worldListPath = Path.Combine(Application.persistentDataPath, FIXED_SAVEDATA_FILENAME);
+        File.WriteAllText(worldListPath, JsonUtility.ToJson(worldList, true));
+    }
+
+    public static ARWorldSaveData GetWorld(string worldName)
     {
-        ARSaveData savedata = null;
+        ARWorldSaveData savedata = null;
         string savedatapath = Path.Combine(Application.persistentDataPath, worldName + ".json");
         if (File.Exists(savedatapath))
         {
-            savedata = JsonUtility.FromJson<ARSaveData>(File.ReadAllText(savedatapath));
+            savedata = JsonUtility.FromJson<ARWorldSaveData>(File.ReadAllText(savedatapath));
+        }
+        else
+        {
+            Debug.LogError("No AR World Save Data found!");
         }
         
         return savedata;
     }
 
-    public static bool SaveNewMapObjects(ARSaveData savedata)
+
+
+    public static bool SaveWorld(ARWorldSaveData savedata)
     {
-        ARWorldMetadata newWorldList = GetAllWorlds();
+        ARWorldList newWorldList = GetAllWorlds();
         string newWorldName = savedata.worldMapName;
 
         if (newWorldName == FIXED_SAVEDATA_FILENAME)
@@ -65,16 +77,17 @@ public class ARSaveDataManager : MonoBehaviour
         
     }
 
-    public static bool RemoveMap(string mapToRemove)
+    public static bool DeleteWorld(string mapToRemove)
     {
         string worldMapPath = Path.Combine(Application.persistentDataPath, mapToRemove + ".worldmap");
-        ARWorldMetadata newWorldList = GetAllWorlds();
+        ARWorldList newWorldList = GetAllWorlds();
         if (newWorldList.worldNames.Contains(mapToRemove))
         {
             if (File.Exists(worldMapPath))
             {
                 File.Delete(worldMapPath);
                 newWorldList.worldNames.Remove(mapToRemove);
+
                 return true;
             }else
             {
@@ -87,4 +100,6 @@ public class ARSaveDataManager : MonoBehaviour
             return false;
         }
     }
+
+
 }

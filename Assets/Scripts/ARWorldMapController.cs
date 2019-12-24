@@ -22,6 +22,10 @@ using UnityEngine.XR.ARKit;
 /// </remarks>
 public class ARWorldMapController : MonoBehaviour
 {
+    public GameObject aedPrefab;
+    public GameObject victimPrefab;
+    public GameObject wallPrefab;
+
     [Tooltip("The ARSession component controlling the session from which to generate ARWorldMaps.")]
     [SerializeField]
     ARSession m_ARSession;
@@ -156,8 +160,8 @@ public class ARWorldMapController : MonoBehaviour
         request.Dispose();
 
         SaveAndDisposeWorldMap(worldMap);
-        ARSaveData saveData = new ARSaveData(currentActiveMap, ARObjectManager.objectList);
-        ARSaveDataManager.SaveNewMapObjects(saveData);
+        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectList);
+        ARSaveDataManager.SaveWorld(saveData);
     }
 
     IEnumerator Load()
@@ -210,7 +214,7 @@ public class ARWorldMapController : MonoBehaviour
 
         Log("Apply ARWorldMap to current session.");
         sessionSubsystem.ApplyWorldMap(worldMap);
-        
+        GenerateARObjects();
     }
 
     void SaveAndDisposeWorldMap(ARWorldMap worldMap)
@@ -229,15 +233,16 @@ public class ARWorldMapController : MonoBehaviour
     }
 #endif
 
-    public string currentActiveMap;
+    public string currentActiveWorld;
 
     string path
     {
         get
         {
-            if (!String.IsNullOrEmpty(currentActiveMap))
-                return Path.Combine(Application.persistentDataPath, currentActiveMap);
+            if (!String.IsNullOrEmpty(currentActiveWorld))
+                return Path.Combine(Application.persistentDataPath, currentActiveWorld + ".worldmap");
             else
+                Debug.LogError("No current world name found.");
                 return null;
         }
     }
@@ -316,4 +321,30 @@ public class ARWorldMapController : MonoBehaviour
     }
 
     List<string> m_LogMessages;
+
+    void GenerateARObjects()
+    {
+        ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
+
+        if (worldSavedata.ARObjectList == null || worldSavedata.ARObjectList.Count == 0)
+        {
+            Debug.Log("No objects found.");
+        }
+
+        foreach (ARObjectMetadata metadata in worldSavedata.ARObjectList)
+        {
+            switch (metadata.objectType)
+            {
+                case ARObjectType.Wall:
+                    Instantiate(wallPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    break;
+                case ARObjectType.AED:
+                    Instantiate(aedPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    break;
+                case ARObjectType.Victim:
+                    Instantiate(victimPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    break;
+            }
+        }
+    }
 }

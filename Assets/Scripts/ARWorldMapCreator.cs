@@ -12,6 +12,6 @@ public class ARWorldMapCreator : MonoBehaviour
 
     public void SetName(string mapName)
     {
-        mapController.currentActiveMap = mapName;
+        mapController.currentActiveWorld = mapName;
     }
 }

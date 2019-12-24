@@ -40,7 +40,7 @@ public class ARObjectManager : MonoBehaviour
     void RemoveARObject(){
     }
 
-    public static void LoadObjectsFromSaveData(ARSaveData saveData){
+    public static void LoadObjectsFromSaveData(ARWorldSaveData saveData){
         List<ARObjectMetadata> objList = saveData.ARObjectList;
         foreach(ARObjectMetadata metadata in objList)
         {
