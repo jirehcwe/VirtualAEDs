@@ -160,7 +160,7 @@ public class ARWorldMapController : MonoBehaviour
         request.Dispose();
 
         SaveAndDisposeWorldMap(worldMap);
-        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectList);
+        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList);
         ARSaveDataManager.SaveWorld(saveData);
     }
 
@@ -345,6 +345,15 @@ public class ARWorldMapController : MonoBehaviour
                     Instantiate(victimPrefab, metadata.transformData.position, metadata.transformData.rotation);
                     break;
             }
+        }
+    }
+
+    public void ResetWorld()
+    {
+        OnResetButton();
+        foreach (GameObject go in ARObjectManager.objReferencelist)
+        {
+            Destroy(go);
         }
     }
 }

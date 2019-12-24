@@ -8,12 +8,14 @@ public class ARWorldMapUIElement : MonoBehaviour
 
     public Button worldDeleteButton;
     public Button worldSelectButton;
-    
+
     private ARWorldMapController mapController;
+    
 
     void Start()
     {
         mapController = FindObjectOfType<ARWorldMapController>();
+
         if (mapController == null)
         {
             Debug.LogError("No Map Controller Found!");

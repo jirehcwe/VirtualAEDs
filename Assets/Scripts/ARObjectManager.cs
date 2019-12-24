@@ -6,7 +6,8 @@ public class ARObjectManager : MonoBehaviour
 
 
     #region Public Fields
-    public static List<ARObjectMetadata> objectList = new List<ARObjectMetadata>();
+    public static List<ARObjectMetadata> objectDataList = new List<ARObjectMetadata>();
+    public static List<GameObject> objReferencelist = new List<GameObject>();
     #endregion
 
     #region Private Fields
@@ -34,17 +35,11 @@ public class ARObjectManager : MonoBehaviour
 
     void RegisterARObject(Transform objectTransform, ARObjectType objectType){
         ARObjectMetadata newObjectData = new ARObjectMetadata(objectTransform, objectType);
-        objectList.Add(newObjectData);
+        objectDataList.Add(newObjectData);
+        objReferencelist.Add(objectTransform.gameObject);
     }
 
     void RemoveARObject(){
     }
 
-    public static void LoadObjectsFromSaveData(ARWorldSaveData saveData){
-        List<ARObjectMetadata> objList = saveData.ARObjectList;
-        foreach(ARObjectMetadata metadata in objList)
-        {
-            //Instantiate them
-        }
-    }
 }

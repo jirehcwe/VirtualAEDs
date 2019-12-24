@@ -24,6 +24,11 @@ public class ARWorldMapListDisplay : MonoBehaviour
         if (worldList.worldNames.Count <= 0)
         {
             print("No worlds found");
+            GameObject worldSelectButton = Instantiate(worldButtonPrefab, parentList);
+            ARWorldMapUIElement worldMapUIElement = worldSelectButton.GetComponent<ARWorldMapUIElement>();
+            worldMapUIElement.worldSelectButton.GetComponentInChildren<TextMeshProUGUI>().text = "NO WORLDS FOUND";
+             worldMapUIElement.worldSelectButton.interactable = false;
+            Destroy(worldMapUIElement.worldDeleteButton.gameObject);
             return;
         }
 
@@ -32,16 +37,18 @@ public class ARWorldMapListDisplay : MonoBehaviour
             GameObject worldSelectButton = Instantiate(worldButtonPrefab, parentList);
             ARWorldMapUIElement worldMapUIElement = worldSelectButton.GetComponent<ARWorldMapUIElement>();
             worldMapUIElement.world = worldName;
-            worldMapUIElement.worldSelectButton.GetComponent<TextMeshProUGUI>().text = worldName;
-            CanvasEnableForWorldSelection(worldMapUIElement.worldDeleteButton);
+            worldMapUIElement.worldSelectButton.GetComponentInChildren<TextMeshProUGUI>().text = worldName;
+            CanvasEnableForWorldSelection(worldMapUIElement.worldSelectButton);
         }
     }
 
     void CanvasEnableForWorldSelection(Button button)
     {
-        button.onClick.AddListener(() => worldSelectCanvas.gameObject.SetActive(false));
-        button.onClick.AddListener(() => worldCreateCanvas.gameObject.SetActive(true));
-        button.onClick.AddListener(() => worldEditCanvasStep1.gameObject.SetActive(false));
-        button.onClick.AddListener(() => worldEditCanvasStep2.gameObject.SetActive(true));
+        button.onClick.AddListener(() => worldCreateCanvas.SetActive(true));
+        button.onClick.AddListener(() => worldEditCanvasStep1.SetActive(false));
+        button.onClick.AddListener(() => worldEditCanvasStep2.SetActive(true));
+        button.onClick.AddListener(() => worldSelectCanvas.SetActive(false));
+        
+        button.onClick.AddListener(() => print("enabling other canvases"));
     }
 }

@@ -17,6 +17,7 @@ public class ARVictimPlacer : MonoBehaviour
     void Start()
     {
         cursor = this.GetComponent<ARCursor>();
+        PlaceVictim = new ARObjectPlacedEvent();
     }
 
     void Update()

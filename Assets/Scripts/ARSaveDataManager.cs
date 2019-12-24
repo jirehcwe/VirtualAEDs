@@ -48,6 +48,7 @@ public class ARSaveDataManager : MonoBehaviour
     {
         ARWorldList newWorldList = GetAllWorlds();
         string newWorldName = savedata.worldMapName;
+        bool containsWorld = false;
 
         if (newWorldName == FIXED_SAVEDATA_FILENAME)
         {
@@ -58,14 +59,17 @@ public class ARSaveDataManager : MonoBehaviour
         if (newWorldList.worldNames.Contains(newWorldName))
         {
             Debug.Log("Saving over pre-existing file!");
+            containsWorld = true;
         }
 
         //Checking for the existence of the world map before saving to the index of world maps
         if (File.Exists(Path.Combine(Application.persistentDataPath, savedata.worldMapName + ".worldmap"))){
-            newWorldList.worldNames.Add(newWorldName);
-            string worldListPath = Path.Combine(Application.persistentDataPath, FIXED_SAVEDATA_FILENAME);
+            if (containsWorld == false)
+            {
+                newWorldList.worldNames.Add(newWorldName);
+            }
             string savedataPath = Path.Combine(Application.persistentDataPath, newWorldName + ".json");
-            File.WriteAllText(worldListPath, JsonUtility.ToJson(newWorldList, true));
+            SetAllWorlds(newWorldList);
             File.WriteAllText(savedataPath, JsonUtility.ToJson(savedata, true));
             return true;
         } else {
@@ -79,14 +83,24 @@ public class ARSaveDataManager : MonoBehaviour
     public static bool DeleteWorld(string mapToRemove)
     {
         string worldMapPath = Path.Combine(Application.persistentDataPath, mapToRemove + ".worldmap");
+        string worldSaveDatapath = Path.Combine(Application.persistentDataPath, mapToRemove + ".json");
         ARWorldList newWorldList = GetAllWorlds();
         if (newWorldList.worldNames.Contains(mapToRemove))
         {
             if (File.Exists(worldMapPath))
             {
                 File.Delete(worldMapPath);
+                print(mapToRemove + ".worldmap" + " was deleted.");
+                if (File.Exists(worldSaveDatapath))
+                {
+                    File.Delete(worldSaveDatapath);
+                    print(mapToRemove + ".json" + " was deleted.");
+                }else
+                {
+                    Debug.LogError("No world save data json found, critical error.");
+                }
                 newWorldList.worldNames.Remove(mapToRemove);
-
+                SetAllWorlds(newWorldList);
                 return true;
             }else
             {
@@ -98,6 +112,44 @@ public class ARSaveDataManager : MonoBehaviour
             Debug.LogError("World List does not contain map to remove. Are you sure this is the right name?");
             return false;
         }
+    }
+
+    public void PrintAllWorlds()
+    {
+        ARWorldList list = GetAllWorlds();
+        foreach(string world in list.worldNames)
+        {
+            print(world);
+        }
+
+        print("done printing all worlds in master list");
+    }
+
+    public void DeleteAllWorlds()
+    {
+        ARWorldList list = new ARWorldList();
+        SetAllWorlds(list);
+        print("done erasing all worlds");
+    }
+
+    public void PrintAllWorldMaps()
+    {
+        foreach(string s in Directory.GetFiles(Application.persistentDataPath))
+        {
+            print(s);
+        }
+
+        print("done printing world maps");
+    }
+
+    public void DeleteAllWorldMaps()
+    {
+        foreach(string s in Directory.GetFiles(Application.persistentDataPath))
+        {
+            File.Delete(s);
+        }
+
+        print("done erasing all contents of persistent data path.");
     }
 
 
