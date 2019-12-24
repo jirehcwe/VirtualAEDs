@@ -57,8 +57,7 @@ public class ARSaveDataManager : MonoBehaviour
 
         if (newWorldList.worldNames.Contains(newWorldName))
         {
-            Debug.LogError("This world already exists!");
-            return false;
+            Debug.Log("Saving over pre-existing file!");
         }
 
         //Checking for the existence of the world map before saving to the index of world maps
