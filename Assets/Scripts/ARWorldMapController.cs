@@ -330,6 +330,7 @@ public class ARWorldMapController : MonoBehaviour
 
     void GenerateARObjects()
     {
+        ResetWorld();
         print("current active world: "  + currentActiveWorld);
         ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
 
@@ -375,8 +376,8 @@ public class ARWorldMapController : MonoBehaviour
         {
             Destroy(go);
         }
-
         ARObjectManager.objReferencelist.Clear();
         ARObjectManager.objectDataList.Clear();
+    
     }
 }
