@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 
+[System.Serializable]
 public struct ARWorldSaveData
 {
     public string worldMapName;
-    public List<ARObjectMetadata> ARObjectList;
+    public ARObjectMetadata[] ARObjectList;
 
-    public ARWorldSaveData(string mapName, List<ARObjectMetadata> objList)
+    public ARWorldSaveData(string mapName, ARObjectMetadata[] objArray)
     {
         worldMapName = mapName;
-        ARObjectList = new List<ARObjectMetadata>(objList);
+        ARObjectList = (ARObjectMetadata[])objArray.Clone();
     }
 }

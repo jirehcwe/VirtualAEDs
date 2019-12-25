@@ -33,11 +33,10 @@ public class ARObjectManager : MonoBehaviour
         
     }
 
-    void RegisterARObject(Transform objectTransform, ARObjectType objectType){
+    public static void RegisterARObject(Transform objectTransform, ARObjectType objectType){
         ARObjectMetadata newObjectData = new ARObjectMetadata(objectTransform, objectType);
         objectDataList.Add(newObjectData);
         objReferencelist.Add(objectTransform.gameObject);
-        print("object added: " + objectTransform.gameObject.name);
     }
 
     void RemoveARObject(){

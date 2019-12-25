@@ -161,7 +161,12 @@ public class ARWorldMapController : MonoBehaviour
 
         SaveAndDisposeWorldMap(worldMap);
         print("Saving ar world data, number of objects: " + ARObjectManager.objectDataList.Count + " " + ARObjectManager.objReferencelist.Count);
-        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList);
+        List<ARObjectMetadata> objListCopy = new List<ARObjectMetadata>();
+        foreach (ARObjectMetadata data in ARObjectManager.objectDataList)
+        {
+            objListCopy.Add(data.Copy());
+        }
+        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList.ToArray());
         ARSaveDataManager.SaveWorld(saveData);
     }
 
@@ -328,9 +333,16 @@ public class ARWorldMapController : MonoBehaviour
         print("current active world: "  + currentActiveWorld);
         ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
 
-        if (worldSavedata.ARObjectList == null || worldSavedata.ARObjectList.Count == 0)
+        if (worldSavedata.ARObjectList == null)
+        {
+            Debug.Log("No list found.");
+            return;
+        }
+        
+        if (worldSavedata.ARObjectList.Length == 0)
         {
             Debug.Log("No objects found.");
+            return;
         }
 
         foreach (ARObjectMetadata metadata in worldSavedata.ARObjectList)
@@ -340,14 +352,17 @@ public class ARWorldMapController : MonoBehaviour
                 case ARObjectType.Wall:
                     Transform wall = Instantiate(wallPrefab, metadata.position, metadata.rotation).transform;
                     wall.localScale = metadata.scale;
+                    ARObjectManager.RegisterARObject(wall, ARObjectType.Wall);
                     break;
                 case ARObjectType.AED:
                     Transform aed = Instantiate(aedPrefab, metadata.position, metadata.rotation).transform;
                     aed.localScale = metadata.scale;
+                    ARObjectManager.RegisterARObject(aed, ARObjectType.AED);
                     break;
                 case ARObjectType.Victim:
                     Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
                     victim.localScale = metadata.scale;
+                    ARObjectManager.RegisterARObject(victim, ARObjectType.Victim);
                     break;
             }
         }
@@ -360,5 +375,8 @@ public class ARWorldMapController : MonoBehaviour
         {
             Destroy(go);
         }
+
+        ARObjectManager.objReferencelist.Clear();
+        ARObjectManager.objectDataList.Clear();
     }
 }

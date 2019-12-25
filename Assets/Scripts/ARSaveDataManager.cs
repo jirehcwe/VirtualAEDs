@@ -6,7 +6,7 @@ public class ARSaveDataManager : MonoBehaviour
 {
     const string FIXED_SAVEDATA_FILENAME = "worldmaplist.json";
 
-    public static ARWorldList GetAllWorlds()
+    public static ARWorldList GetWorldList()
     {
         ARWorldList worldList = null;
         string savedatapath = Path.Combine(Application.persistentDataPath, FIXED_SAVEDATA_FILENAME);
@@ -21,10 +21,10 @@ public class ARSaveDataManager : MonoBehaviour
         return worldList;
     }
 
-    public static void SetAllWorlds(ARWorldList worldList)
+    public static void SetWorldList(ARWorldList worldList)
     {   
         string worldListPath = Path.Combine(Application.persistentDataPath, FIXED_SAVEDATA_FILENAME);
-        File.WriteAllText(worldListPath, JsonUtility.ToJson(worldList, true));
+        File.WriteAllText(worldListPath, JsonUtility.ToJson(worldList));
     }
 
     public static ARWorldSaveData GetWorld(string worldName)
@@ -40,7 +40,7 @@ public class ARSaveDataManager : MonoBehaviour
         {
             Debug.LogError("No AR World Save Data found!");
             List<ARObjectMetadata> list = new List<ARObjectMetadata>();
-            savedata = new ARWorldSaveData(worldName, list);
+            savedata = new ARWorldSaveData(worldName, list.ToArray());
             return savedata;
         }
     }
@@ -49,7 +49,7 @@ public class ARSaveDataManager : MonoBehaviour
 
     public static bool SaveWorld(ARWorldSaveData savedata)
     {
-        ARWorldList newWorldList = GetAllWorlds();
+        ARWorldList newWorldList = GetWorldList();
         string newWorldName = savedata.worldMapName;
         bool containsWorld = false;
 
@@ -70,10 +70,16 @@ public class ARSaveDataManager : MonoBehaviour
             if (containsWorld == false)
             {
                 newWorldList.worldNames.Add(newWorldName);
+                SetWorldList(newWorldList);
             }
+
             string savedataPath = Path.Combine(Application.persistentDataPath, newWorldName + ".json");
-            SetAllWorlds(newWorldList);
-            File.WriteAllText(savedataPath, JsonUtility.ToJson(savedata, true));
+            foreach(ARObjectMetadata data in savedata.ARObjectList)
+            {
+                print(data.objectType);
+            }
+            File.WriteAllText(savedataPath, JsonUtility.ToJson(savedata));
+            print("saving world save data to : " + savedataPath);
             return true;
         } else {
             Debug.LogError("No corresponding .worldmap found.");
@@ -87,7 +93,7 @@ public class ARSaveDataManager : MonoBehaviour
     {
         string worldMapPath = Path.Combine(Application.persistentDataPath, mapToRemove + ".worldmap");
         string worldSaveDatapath = Path.Combine(Application.persistentDataPath, mapToRemove + ".json");
-        ARWorldList newWorldList = GetAllWorlds();
+        ARWorldList newWorldList = GetWorldList();
         if (newWorldList.worldNames.Contains(mapToRemove))
         {
             if (File.Exists(worldMapPath))
@@ -103,7 +109,7 @@ public class ARSaveDataManager : MonoBehaviour
                     Debug.LogError("No world save data json found, critical error.");
                 }
                 newWorldList.worldNames.Remove(mapToRemove);
-                SetAllWorlds(newWorldList);
+                SetWorldList(newWorldList);
                 return true;
             }else
             {
@@ -119,7 +125,7 @@ public class ARSaveDataManager : MonoBehaviour
 
     public void PrintAllWorlds()
     {
-        ARWorldList list = GetAllWorlds();
+        ARWorldList list = GetWorldList();
         foreach(string world in list.worldNames)
         {
             print(world);
@@ -131,7 +137,7 @@ public class ARSaveDataManager : MonoBehaviour
     public void DeleteAllWorlds()
     {
         ARWorldList list = new ARWorldList();
-        SetAllWorlds(list);
+        SetWorldList(list);
         print("done erasing all worlds");
     }
 
@@ -144,12 +150,15 @@ public class ARSaveDataManager : MonoBehaviour
             {
                 print("----objects in " + file.Name + " ----");
                 char[] splitter = {'.'};
+                print("world name: " + file.Name.Split(splitter)[0]);
                 ARWorldSaveData worldData = GetWorld(file.Name.Split(splitter)[0]);
-                foreach(ARObjectMetadata obj in worldData.ARObjectList)
+                if (worldData.ARObjectList != null)
                 {
-                    print(obj.objectType + " " + obj.position);
+                    foreach(ARObjectMetadata obj in worldData.ARObjectList)
+                    {
+                        print(obj.objectType + " " + obj.position);
+                    }
                 }
-
                 print("----end of world data for " + file.Name + " ----");
             }
         }
@@ -170,6 +179,4 @@ public class ARSaveDataManager : MonoBehaviour
 
         print("done erasing all contents of persistent data path.");
     }
-
-
 }
