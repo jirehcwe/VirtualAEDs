@@ -6,7 +6,7 @@ public class ARPlacerAED : MonoBehaviour
 
     #region Public Fields
     public GameObject aedPrefab;
-    public static ARObjectPlacedEvent PlaceAED;
+    public static ARObjectPlacedEvent PlaceAED = new ARObjectPlacedEvent();
     #endregion
 
     #region Private Fields
@@ -53,6 +53,7 @@ public class ARPlacerAED : MonoBehaviour
             
             if (PlaceAED != null)
             {
+                print("invoking AED event");
                 PlaceAED.Invoke(newAED.transform, ARObjectType.AED);
             }
         }

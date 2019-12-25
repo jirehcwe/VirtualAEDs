@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
 public class ARSaveDataManager : MonoBehaviour
 {
@@ -28,18 +29,20 @@ public class ARSaveDataManager : MonoBehaviour
 
     public static ARWorldSaveData GetWorld(string worldName)
     {
-        ARWorldSaveData savedata = null;
+        ARWorldSaveData savedata;
         string savedatapath = Path.Combine(Application.persistentDataPath, worldName + ".json");
         if (File.Exists(savedatapath))
         {
             savedata = JsonUtility.FromJson<ARWorldSaveData>(File.ReadAllText(savedatapath));
+            return savedata;
         }
         else
         {
             Debug.LogError("No AR World Save Data found!");
+            List<ARObjectMetadata> list = new List<ARObjectMetadata>();
+            savedata = new ARWorldSaveData(worldName, list);
+            return savedata;
         }
-        
-        return savedata;
     }
 
 
@@ -50,7 +53,7 @@ public class ARSaveDataManager : MonoBehaviour
         string newWorldName = savedata.worldMapName;
         bool containsWorld = false;
 
-        if (newWorldName == FIXED_SAVEDATA_FILENAME)
+        if (newWorldName == FIXED_SAVEDATA_FILENAME || newWorldName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
         {
             Debug.LogError("File name error, please rename file!");
             return false;
@@ -134,6 +137,22 @@ public class ARSaveDataManager : MonoBehaviour
 
     public void PrintAllWorldMaps()
     {
+        DirectoryInfo info = new DirectoryInfo(Application.persistentDataPath);
+        foreach(FileInfo file in info.EnumerateFiles())
+        {
+            if (file.Extension.Contains("json") && file.Name.Contains("worldmaplist") == false)
+            {
+                print("----objects in " + file.Name + " ----");
+                char[] splitter = {'.'};
+                ARWorldSaveData worldData = GetWorld(file.Name.Split(splitter)[0]);
+                foreach(ARObjectMetadata obj in worldData.ARObjectList)
+                {
+                    print(obj.objectType + " " + obj.position);
+                }
+
+                print("----end of world data for " + file.Name + " ----");
+            }
+        }
         foreach(string s in Directory.GetFiles(Application.persistentDataPath))
         {
             print(s);

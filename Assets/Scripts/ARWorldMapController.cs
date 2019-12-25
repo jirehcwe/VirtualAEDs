@@ -160,6 +160,7 @@ public class ARWorldMapController : MonoBehaviour
         request.Dispose();
 
         SaveAndDisposeWorldMap(worldMap);
+        print("Saving ar world data, number of objects: " + ARObjectManager.objectDataList.Count + " " + ARObjectManager.objReferencelist.Count);
         ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList);
         ARSaveDataManager.SaveWorld(saveData);
     }
@@ -324,6 +325,7 @@ public class ARWorldMapController : MonoBehaviour
 
     void GenerateARObjects()
     {
+        print("current active world: "  + currentActiveWorld);
         ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
 
         if (worldSavedata.ARObjectList == null || worldSavedata.ARObjectList.Count == 0)
@@ -336,13 +338,16 @@ public class ARWorldMapController : MonoBehaviour
             switch (metadata.objectType)
             {
                 case ARObjectType.Wall:
-                    Instantiate(wallPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    Transform wall = Instantiate(wallPrefab, metadata.position, metadata.rotation).transform;
+                    wall.localScale = metadata.scale;
                     break;
                 case ARObjectType.AED:
-                    Instantiate(aedPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    Transform aed = Instantiate(aedPrefab, metadata.position, metadata.rotation).transform;
+                    aed.localScale = metadata.scale;
                     break;
                 case ARObjectType.Victim:
-                    Instantiate(victimPrefab, metadata.transformData.position, metadata.transformData.rotation);
+                    Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
+                    victim.localScale = metadata.scale;
                     break;
             }
         }

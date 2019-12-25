@@ -37,6 +37,7 @@ public class ARObjectManager : MonoBehaviour
         ARObjectMetadata newObjectData = new ARObjectMetadata(objectTransform, objectType);
         objectDataList.Add(newObjectData);
         objReferencelist.Add(objectTransform.gameObject);
+        print("object added: " + objectTransform.gameObject.name);
     }
 
     void RemoveARObject(){

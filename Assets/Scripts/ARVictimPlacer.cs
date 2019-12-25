@@ -7,7 +7,7 @@ public class ARVictimPlacer : MonoBehaviour
 
     #region Public Fields
     public GameObject victimPrefab;
-    public static ARObjectPlacedEvent PlaceVictim;
+    public static ARObjectPlacedEvent PlaceVictim = new ARObjectPlacedEvent();
     #endregion
 
     #region Private Fields
@@ -45,6 +45,7 @@ public class ARVictimPlacer : MonoBehaviour
             
             if (PlaceVictim != null)
             {
+                print("invoking victim event");
                 PlaceVictim.Invoke(victim.transform, ARObjectType.Victim);
             }
             
