@@ -220,7 +220,8 @@ public class ARWorldMapController : MonoBehaviour
 
         Log("Apply ARWorldMap to current session.");
         sessionSubsystem.ApplyWorldMap(worldMap);
-        GenerateARObjects();
+        OnResetButton();
+        ARObjectManager.GenerateARObjectsByName(currentActiveWorld);
     }
 
     void SaveAndDisposeWorldMap(ARWorldMap worldMap)
@@ -328,56 +329,46 @@ public class ARWorldMapController : MonoBehaviour
 
     List<string> m_LogMessages;
 
-    void GenerateARObjects()
-    {
-        ResetWorld();
-        print("current active world: "  + currentActiveWorld);
-        ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
+    // void GenerateARObjects()
+    // {
+    //     ResetWorld();
+    //     print("current active world: "  + currentActiveWorld);
+    //     ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
 
-        if (worldSavedata.ARObjectList == null)
-        {
-            Debug.Log("No list found.");
-            return;
-        }
+    //     if (worldSavedata.ARObjectList == null)
+    //     {
+    //         Debug.Log("No list found.");
+    //         return;
+    //     }
         
-        if (worldSavedata.ARObjectList.Length == 0)
-        {
-            Debug.Log("No objects found.");
-            return;
-        }
+    //     if (worldSavedata.ARObjectList.Length == 0)
+    //     {
+    //         Debug.Log("No objects found.");
+    //         return;
+    //     }
 
-        foreach (ARObjectMetadata metadata in worldSavedata.ARObjectList)
-        {
-            switch (metadata.objectType)
-            {
-                case ARObjectType.Wall:
-                    Transform wall = Instantiate(wallPrefab, metadata.position, metadata.rotation).transform;
-                    wall.localScale = metadata.scale;
-                    ARObjectManager.RegisterARObject(wall, ARObjectType.Wall);
-                    break;
-                case ARObjectType.AED:
-                    Transform aed = Instantiate(aedPrefab, metadata.position, metadata.rotation).transform;
-                    aed.localScale = metadata.scale;
-                    ARObjectManager.RegisterARObject(aed, ARObjectType.AED);
-                    break;
-                case ARObjectType.Victim:
-                    Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
-                    victim.localScale = metadata.scale;
-                    ARObjectManager.RegisterARObject(victim, ARObjectType.Victim);
-                    break;
-            }
-        }
-    }
+    //     foreach (ARObjectMetadata metadata in worldSavedata.ARObjectList)
+    //     {
+    //         switch (metadata.objectType)
+    //         {
+    //             case ARObjectType.Wall:
+    //                 Transform wall = Instantiate(wallPrefab, metadata.position, metadata.rotation).transform;
+    //                 wall.localScale = metadata.scale;
+    //                 ARObjectManager.RegisterARObject(wall, ARObjectType.Wall);
+    //                 break;
+    //             case ARObjectType.AED:
+    //                 Transform aed = Instantiate(aedPrefab, metadata.position, metadata.rotation).transform;
+    //                 aed.localScale = metadata.scale;
+    //                 ARObjectManager.RegisterARObject(aed, ARObjectType.AED);
+    //                 break;
+    //             case ARObjectType.Victim:
+    //                 Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
+    //                 victim.localScale = metadata.scale;
+    //                 ARObjectManager.RegisterARObject(victim, ARObjectType.Victim);
+    //                 break;
+    //         }
+    //     }
+    // }
 
-    public void ResetWorld()
-    {
-        OnResetButton();
-        foreach (GameObject go in ARObjectManager.objReferencelist)
-        {
-            Destroy(go);
-        }
-        ARObjectManager.objReferencelist.Clear();
-        ARObjectManager.objectDataList.Clear();
-    
-    }
+
 }
