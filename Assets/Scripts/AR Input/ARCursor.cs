@@ -13,7 +13,20 @@ public class ARCursor : MonoBehaviour
 
     #region Private Fields
     Transform cursorInstanceTransform;
+    bool isRecording = false;
     #endregion
+
+    private void OnEnable()
+    {
+        ARDataCollectionManager.StartDataRecording.AddListener(StartRecord);
+        ARDataCollectionManager.StopDataRecording.AddListener(EndRecord);
+    }
+
+    private void OnDisable()
+    {
+        ARDataCollectionManager.StartDataRecording.RemoveListener(StartRecord);
+        ARDataCollectionManager.StopDataRecording.RemoveListener(EndRecord);
+    }
 
     void Start()
     {
@@ -23,6 +36,14 @@ public class ARCursor : MonoBehaviour
     void Update()
     {
         UpdateCursorPosition();
+    }
+
+    private void FixedUpdate()
+    {
+        if (isRecording)
+        {
+            ARDataCollectionManager.RecordDataPoint(transform.position, transform.rotation, Time.fixedTime);
+        }
     }
 
     void UpdateCursorPosition(){
@@ -67,5 +88,15 @@ public class ARCursor : MonoBehaviour
             cursorInstanceTransform = Instantiate(cursorPrefab, new Vector3(x, y, z), Quaternion.identity).transform;
         }
         cursorInstanceTransform.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+    }
+
+    void StartRecord()
+    {
+        isRecording = true;
+    }
+
+    void EndRecord()
+    {
+        isRecording = false;
     }
 }

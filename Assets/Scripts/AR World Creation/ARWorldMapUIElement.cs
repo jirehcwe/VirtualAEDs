@@ -24,7 +24,7 @@ public class ARWorldMapUIElement : MonoBehaviour
 
     public void LoadWorld()
     {
-        mapController.currentActiveWorld = world;
+        ARWorldMapController.currentActiveWorld = world;
         mapController.OnLoadButton();
     }
     

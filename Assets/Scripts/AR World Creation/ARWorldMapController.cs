@@ -25,6 +25,7 @@ public class ARWorldMapController : MonoBehaviour
     public GameObject aedPrefab;
     public GameObject victimPrefab;
     public GameObject wallPrefab;
+    public ARPlaneManager planeManager;
 
     [Tooltip("The ARSession component controlling the session from which to generate ARWorldMaps.")]
     [SerializeField]
@@ -104,6 +105,18 @@ public class ARWorldMapController : MonoBehaviour
         set { m_LoadButton = value; }
     }
 
+    private void OnEnable()
+    {
+        ARDataCollectionManager.StartDataRecording.AddListener(SetDataCollectionWorldName);
+        ARDataCollectionManager.StopDataRecording.AddListener(StopDataCollection);
+    }
+
+    private void OnDisable()
+    {
+        ARDataCollectionManager.StartDataRecording.RemoveListener(SetDataCollectionWorldName);
+        ARDataCollectionManager.StopDataRecording.RemoveListener(StopDataCollection);
+    }
+
     /// <summary>
     /// Create an <c>ARWorldMap</c> and save it to disk.
     /// </summary>
@@ -167,7 +180,7 @@ public class ARWorldMapController : MonoBehaviour
             objListCopy.Add(data.Copy());
         }
         ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList.ToArray());
-        ARSaveDataManager.SaveWorld(saveData);
+        ARSaveDataManager.SetWorldData(saveData);
     }
 
     IEnumerator Load()
@@ -221,7 +234,7 @@ public class ARWorldMapController : MonoBehaviour
         Log("Apply ARWorldMap to current session.");
         sessionSubsystem.ApplyWorldMap(worldMap);
         OnResetButton();
-        ARObjectManager.GenerateARObjectsByName(currentActiveWorld);
+        ARObjectManager.Instance.GenerateARObjectsFromDeviceMemory(currentActiveWorld);
     }
 
     void SaveAndDisposeWorldMap(ARWorldMap worldMap)
@@ -240,7 +253,7 @@ public class ARWorldMapController : MonoBehaviour
     }
 #endif
 
-    public string currentActiveWorld;
+    public static string currentActiveWorld;
 
     string path
     {
@@ -329,46 +342,23 @@ public class ARWorldMapController : MonoBehaviour
 
     List<string> m_LogMessages;
 
-    // void GenerateARObjects()
-    // {
-    //     ResetWorld();
-    //     print("current active world: "  + currentActiveWorld);
-    //     ARWorldSaveData worldSavedata = ARSaveDataManager.GetWorld(currentActiveWorld);
+    void SetDataCollectionWorldName()
+    {
+        ARDataCollectionManager.WorldName = currentActiveWorld;
+    }
 
-    //     if (worldSavedata.ARObjectList == null)
-    //     {
-    //         Debug.Log("No list found.");
-    //         return;
-    //     }
-        
-    //     if (worldSavedata.ARObjectList.Length == 0)
-    //     {
-    //         Debug.Log("No objects found.");
-    //         return;
-    //     }
+    void StopDataCollection()
+    {
+        ARDataCollectionManager.WorldName = null;
+    }
 
-    //     foreach (ARObjectMetadata metadata in worldSavedata.ARObjectList)
-    //     {
-    //         switch (metadata.objectType)
-    //         {
-    //             case ARObjectType.Wall:
-    //                 Transform wall = Instantiate(wallPrefab, metadata.position, metadata.rotation).transform;
-    //                 wall.localScale = metadata.scale;
-    //                 ARObjectManager.RegisterARObject(wall, ARObjectType.Wall);
-    //                 break;
-    //             case ARObjectType.AED:
-    //                 Transform aed = Instantiate(aedPrefab, metadata.position, metadata.rotation).transform;
-    //                 aed.localScale = metadata.scale;
-    //                 ARObjectManager.RegisterARObject(aed, ARObjectType.AED);
-    //                 break;
-    //             case ARObjectType.Victim:
-    //                 Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
-    //                 victim.localScale = metadata.scale;
-    //                 ARObjectManager.RegisterARObject(victim, ARObjectType.Victim);
-    //                 break;
-    //         }
-    //     }
-    // }
+    public void DisablePlaneDetection()
+    {
+        planeManager.detectionMode = PlaneDetectionMode.None;
+    }
 
-
+    public void EnablePlaneDetection()
+    {
+        planeManager.detectionMode = PlaneDetectionMode.Horizontal;
+    }
 }

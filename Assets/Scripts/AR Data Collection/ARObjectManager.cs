@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class ARObjectManager : MonoBehaviour
 {
     #region Public Fields
+    public static ARObjectManager Instance;
     public static List<ARObjectMetadata> objectDataList = new List<ARObjectMetadata>();
     public static List<GameObject> objReferencelist = new List<GameObject>();
     public GameObject aedPrefab;
@@ -31,6 +32,14 @@ public class ARObjectManager : MonoBehaviour
 
     void Start()
     {
+        if (Instance != this && Instance != null)
+        {
+            Destroy(this);
+        }else if (Instance == null)
+        {
+            Instance = this;
+        }
+
         aedPrefab = Resources.Load<GameObject>("AED");
         wallPrefab = Resources.Load<GameObject>("Wall");
         victimPrefab = Resources.Load<GameObject>("Victim_root");
@@ -109,7 +118,7 @@ public class ARObjectManager : MonoBehaviour
         }
     }
 
-    public static void ResetObjects()
+    public void ResetObjects()
     {
         foreach (GameObject go in objReferencelist)
         {

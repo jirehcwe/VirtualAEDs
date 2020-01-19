@@ -4,7 +4,6 @@ public class ARWorldMapCreator : MonoBehaviour
 {
 
     #region Public Fields
-    public ARWorldMapController mapController;
     #endregion
 
     #region Private Fields
@@ -12,6 +11,6 @@ public class ARWorldMapCreator : MonoBehaviour
 
     public void SetName(string mapName)
     {
-        mapController.currentActiveWorld = mapName;
+        ARWorldMapController.currentActiveWorld = mapName;
     }
 }

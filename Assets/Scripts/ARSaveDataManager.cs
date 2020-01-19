@@ -4,7 +4,26 @@ using System.Collections.Generic;
 
 public class ARSaveDataManager : MonoBehaviour
 {
+    #region Public Variables
+    public static StreamWriter writer;
+    #endregion
+
+    #region Private Variables
     const string FIXED_SAVEDATA_FILENAME = "worldmaplist.json";
+    string worldNameForDataRecording = null;
+    #endregion
+
+    private void OnEnable()
+    {
+        ARDataCollectionManager.StartDataRecording.AddListener(OpenFileStream);
+        ARDataCollectionManager.StopDataRecording.AddListener(CloseFileStream);
+    }
+    
+    private void OnDisable()
+    {
+        ARDataCollectionManager.StartDataRecording.RemoveListener(OpenFileStream);
+        ARDataCollectionManager.StopDataRecording.RemoveListener(CloseFileStream);
+    }
 
     public static ARWorldList GetWorldList()
     {
@@ -62,7 +81,7 @@ public class ARSaveDataManager : MonoBehaviour
         }
     }
 
-    public static bool SaveWorld(ARWorldSaveData savedata)
+    public static bool SetWorldData(ARWorldSaveData savedata)
     {
         ARWorldList newWorldList = GetWorldList();
         string newWorldName = savedata.worldMapName;
@@ -102,6 +121,30 @@ public class ARSaveDataManager : MonoBehaviour
         }
 
         
+    }
+
+    public static bool SaveDataPoint(string worldName, ARDataPoint datapoint)
+    {
+        writer.WriteLine(JsonUtility.ToJson(datapoint));
+        return false;
+    }
+
+    public void OpenFileStream()
+    {
+        worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
+        if (string.IsNullOrEmpty(worldNameForDataRecording))
+        {
+            Debug.LogError("ARWorldMapController world is null!");
+            return;
+        }
+        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_" + System.DateTime.Now.ToString() + ".json");
+        writer = new StreamWriter(datapointFilePath, true);
+    }
+
+    public void CloseFileStream()
+    {
+        worldNameForDataRecording = null;
+        writer.Close();
     }
 
     public static bool DeleteWorld(string mapToRemove)
