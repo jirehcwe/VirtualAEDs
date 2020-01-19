@@ -58,6 +58,7 @@ public class ARDataCollectionManager : MonoBehaviour
             dataPoints.Clear();
         } else if (dataPoints.Count > 1/Time.fixedDeltaTime)
         {
+            Debug.LogError("NOT DONE YET");
             ARDataPoint[] copy = new ARDataPoint[dataPoints.Count];
             dataPoints.CopyTo(copy);
             PushDataListToFile(WorldName, copy);
@@ -71,7 +72,7 @@ public class ARDataCollectionManager : MonoBehaviour
         StartDataRecording.Invoke();
     }
 
-    public void EndRecording()
+    public void StopRecording()
     {
         StopDataRecording.Invoke();
     }
