@@ -105,10 +105,11 @@ public class ARWorldMapController : MonoBehaviour
         set { m_LoadButton = value; }
     }
 
-    private void OnEnable()
+    private void Start()
     {
         ARDataCollectionManager.StartDataRecording.AddListener(SetDataCollectionWorldName);
         ARDataCollectionManager.StopDataRecording.AddListener(StopDataCollection);
+        print("added listener for world map con");
     }
 
     private void OnDisable()
@@ -344,11 +345,13 @@ public class ARWorldMapController : MonoBehaviour
 
     void SetDataCollectionWorldName()
     {
+        print("setting world name for data saving");
         ARDataCollectionManager.WorldName = currentActiveWorld;
     }
 
     void StopDataCollection()
     {
+        print("setting world name to null in mapcontroller");
         ARDataCollectionManager.WorldName = null;
     }
 

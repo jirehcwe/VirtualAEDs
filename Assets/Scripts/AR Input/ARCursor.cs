@@ -16,21 +16,18 @@ public class ARCursor : MonoBehaviour
     bool isRecording = false;
     #endregion
 
-    private void OnEnable()
+    public void OnDisable()
     {
-        ARDataCollectionManager.StartDataRecording.AddListener(StartRecord);
-        ARDataCollectionManager.StopDataRecording.AddListener(EndRecord);
-    }
-
-    private void OnDisable()
-    {
-        ARDataCollectionManager.StartDataRecording.RemoveListener(StartRecord);
-        ARDataCollectionManager.StopDataRecording.RemoveListener(EndRecord);
+        ARDataCollectionManager.StartDataRecording.RemoveListener(StartRecordCursor);
+        ARDataCollectionManager.StopDataRecording.RemoveListener(EndRecordCursor);
     }
 
     void Start()
     {
         SetupCursorObject();
+        ARDataCollectionManager.StartDataRecording.AddListener(StartRecordCursor);
+        ARDataCollectionManager.StopDataRecording.AddListener(EndRecordCursor);
+        print("added listener for cursor");
     }
 
     void Update()
@@ -90,13 +87,15 @@ public class ARCursor : MonoBehaviour
         cursorInstanceTransform.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
     }
 
-    void StartRecord()
+    void StartRecordCursor()
     {
+        print("recording from cursor");
         isRecording = true;
     }
 
-    void EndRecord()
+    void EndRecordCursor()
     {
+        print("end recording from cursor");
         isRecording = false;
     }
 }

@@ -13,10 +13,17 @@ public class ARSaveDataManager : MonoBehaviour
     string worldNameForDataRecording = null;
     #endregion
 
-    private void OnEnable()
+    public void Start()
     {
         ARDataCollectionManager.StartDataRecording.AddListener(OpenFileStream);
         ARDataCollectionManager.StopDataRecording.AddListener(CloseFileStream);
+        print("event listeners added for save data manager");
+    }
+
+    private void OnEnable()
+    {
+        
+
     }
     
     private void OnDisable()
@@ -87,7 +94,7 @@ public class ARSaveDataManager : MonoBehaviour
         string newWorldName = savedata.worldMapName;
         bool containsWorld = false;
 
-        if (newWorldName == FIXED_SAVEDATA_FILENAME || newWorldName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+        if (newWorldName == FIXED_SAVEDATA_FILENAME || newWorldName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1 || newWorldName.Contains("data"))
         {
             Debug.LogError("File name error, please rename file!");
             return false;
@@ -115,7 +122,7 @@ public class ARSaveDataManager : MonoBehaviour
             File.WriteAllText(savedataPath, JsonUtility.ToJson(savedata));
             print("saving world save data to : " + savedataPath);
             return true;
-        } else {
+        } else{
             Debug.LogError("No corresponding .worldmap found.");
             return false;
         }
@@ -131,18 +138,21 @@ public class ARSaveDataManager : MonoBehaviour
 
     public void OpenFileStream()
     {
+        print("opening stream");
+
         worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
         if (string.IsNullOrEmpty(worldNameForDataRecording))
         {
             Debug.LogError("ARWorldMapController world is null!");
             return;
         }
-        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_" + System.DateTime.Now.ToString() + ".json");
+        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_data_" + System.DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".json");
         writer = new StreamWriter(datapointFilePath, true);
     }
 
     public void CloseFileStream()
     {
+        print("closing stream");
         worldNameForDataRecording = null;
         writer.Close();
     }

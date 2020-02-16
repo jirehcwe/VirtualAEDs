@@ -16,12 +16,12 @@ public class ARDataCollectionManager : MonoBehaviour
     #endregion
 
     #region Private Fields
-    static List<ARDataPoint> dataPoints;
+    static List<ARDataPoint> dataPoints = new List<ARDataPoint>();
     #endregion
 
     void Start()
     {
-        if (Instance != null || Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
         }else
@@ -30,11 +30,6 @@ public class ARDataCollectionManager : MonoBehaviour
         }
 
         IsRecording = false;
-    }
-
-    void Update()
-    {
-        
     }
 
     public static void RecordDataPoint(Vector3 position, Quaternion gaze, float timeStamp)
@@ -49,13 +44,12 @@ public class ARDataCollectionManager : MonoBehaviour
         }
 
         ARDataPoint point = new ARDataPoint(position, gaze, timeStamp);
-        dataPoints.Add(point);
+        
 
 
         if (Instance.isDiscreteSaveOperation)
         {
             PushDataPointToFile(WorldName, point);
-            dataPoints.Clear();
         } else if (dataPoints.Count > 1/Time.fixedDeltaTime)
         {
             Debug.LogError("NOT DONE YET");
@@ -63,17 +57,22 @@ public class ARDataCollectionManager : MonoBehaviour
             dataPoints.CopyTo(copy);
             PushDataListToFile(WorldName, copy);
             dataPoints.Clear();
+        } else {
+            dataPoints.Add(point);
         }
 
     }
     
     public void StartRecording()
     {
+        print("invoking " + StartDataRecording.GetPersistentEventCount() + " start events");
         StartDataRecording.Invoke();
     }
 
     public void StopRecording()
     {
+        print("invoking " + StopDataRecording.GetPersistentEventCount() + " stop events");
+        
         StopDataRecording.Invoke();
     }
 

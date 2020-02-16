@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-[SerializeField]
+[Serializable]
 public struct ARDataPoint
 {
     public ARDataPoint(Vector3 pos, Quaternion look, float time)
