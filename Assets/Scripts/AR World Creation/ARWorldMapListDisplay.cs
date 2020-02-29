@@ -30,7 +30,7 @@ public class ARWorldMapListDisplay : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        ARWorldList worldList = ARSaveDataManager.GetWorldList();
+        ARWorldList worldList = ARSaveDataSystemIO.GetWorldList();
         if (worldList.worldNames.Count <= 0)
         {
             print("No worlds found");

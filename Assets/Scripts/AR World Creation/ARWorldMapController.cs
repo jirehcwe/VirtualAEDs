@@ -181,7 +181,7 @@ public class ARWorldMapController : MonoBehaviour
             objListCopy.Add(data.Copy());
         }
         ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList.ToArray());
-        ARSaveDataManager.SetWorldData(saveData);
+        ARSaveDataSystemIO.SetWorldData(saveData);
     }
 
     IEnumerator Load()
@@ -221,6 +221,7 @@ public class ARWorldMapController : MonoBehaviour
         ARWorldMap worldMap;
         if (ARWorldMap.TryDeserialize(data, out worldMap))
         data.Dispose();
+        
 
         if (worldMap.valid)
         {

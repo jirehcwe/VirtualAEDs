@@ -66,14 +66,14 @@ public class ARObjectManager : MonoBehaviour
     public void GenerateARObjectsFromDeviceMemory(string worldName)
     {
 
-        ARWorldSaveData worldSaveData = ARSaveDataManager.GetWorldByName(worldName);
+        ARWorldSaveData worldSaveData = ARSaveDataSystemIO.GetWorldByName(worldName);
         print("generating world: "  + worldName);
         GenerateARObjects(worldSaveData.ARObjectList);
     }
 
     public void GenerateARObjectsFromPath(string path)
     {
-        ARWorldSaveData worldSaveData = ARSaveDataManager.GetWorldByPath(path);
+        ARWorldSaveData worldSaveData = ARSaveDataSystemIO.GetWorldByPath(path);
         print("generating world at "  + path);
         GenerateARObjects(worldSaveData.ARObjectList);
     }

@@ -83,7 +83,7 @@ public class ARDataCollectionManager : MonoBehaviour
 
     public static void PushDataPointToFile(string worldName, ARDataPoint dataPoint)
     {
-        ARSaveDataManager.SaveDataPoint(worldName, dataPoint);
+        ARSaveDataSystemIO.SaveDataPoint(worldName, dataPoint);
     }
     
 }

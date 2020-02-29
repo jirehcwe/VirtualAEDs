@@ -2,7 +2,10 @@
 using System.IO;
 using System.Collections.Generic;
 
-public class ARSaveDataManager : MonoBehaviour
+/// <summary>
+/// This class contains system I/O-specific static functions that serialize and deserialize .json and other data files.
+/// </summary>
+public class ARSaveDataSystemIO : MonoBehaviour
 {
     #region Public Variables
     public static StreamWriter writer;
@@ -10,7 +13,7 @@ public class ARSaveDataManager : MonoBehaviour
 
     #region Private Variables
     const string FIXED_SAVEDATA_FILENAME = "worldmaplist.json";
-    string worldNameForDataRecording = null;
+    static string worldNameForDataRecording = null;
     #endregion
 
     public void Start()
@@ -18,12 +21,6 @@ public class ARSaveDataManager : MonoBehaviour
         ARDataCollectionManager.StartDataRecording.AddListener(OpenFileStream);
         ARDataCollectionManager.StopDataRecording.AddListener(CloseFileStream);
         print("event listeners added for save data manager");
-    }
-
-    private void OnEnable()
-    {
-        
-
     }
     
     private void OnDisable()
@@ -130,33 +127,6 @@ public class ARSaveDataManager : MonoBehaviour
         
     }
 
-    public static bool SaveDataPoint(string worldName, ARDataPoint datapoint)
-    {
-        writer.WriteLine(JsonUtility.ToJson(datapoint));
-        return false;
-    }
-
-    public void OpenFileStream()
-    {
-        print("opening stream");
-
-        worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
-        if (string.IsNullOrEmpty(worldNameForDataRecording))
-        {
-            Debug.LogError("ARWorldMapController world is null!");
-            return;
-        }
-        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_data_" + System.DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".json");
-        writer = new StreamWriter(datapointFilePath, true);
-    }
-
-    public void CloseFileStream()
-    {
-        print("closing stream");
-        worldNameForDataRecording = null;
-        writer.Close();
-    }
-
     public static bool DeleteWorld(string mapToRemove)
     {
         string worldMapPath = Path.Combine(Application.persistentDataPath, mapToRemove + ".worldmap");
@@ -191,6 +161,69 @@ public class ARSaveDataManager : MonoBehaviour
         }
     }
 
+    static int GetSessionRecordingCountToWorld(string worldName)
+    {
+        return GetWorldByName(worldName).sessionsRecorded;
+    }
+
+    static void Add1ToSessionRecordingCountToWorld(string worldName)
+    {
+        ARWorldSaveData worldSaveData = GetWorldByName(worldName);
+        worldSaveData.sessionsRecorded += 1;
+        SetWorldData(worldSaveData);
+    }
+
+    #region Data Point Functions
+
+    public static bool SaveDataPoint(string worldName, ARDataPoint datapoint)
+    {
+        writer.WriteLine(JsonUtility.ToJson(datapoint));
+        return false;
+    }
+
+    public static List<ARDataPoint> GetDataPoints(string worldName, int sessionNumber = 1)
+    {
+        worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
+        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_data_" + sessionNumber + ".json");
+        string[] datalines = File.ReadAllLines(datapointFilePath);
+        List<ARDataPoint> dataPoints = new List<ARDataPoint>();
+
+        //TODO make enumerator so we can frame it and show progress?
+        foreach (string datapoint in datalines)
+        {
+            dataPoints.Add(JsonUtility.FromJson<ARDataPoint>(datapoint));
+        }
+
+        return dataPoints;
+    }
+
+    private void OpenFileStream()
+    {
+        print("opening stream");
+
+        worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
+        if (string.IsNullOrEmpty(worldNameForDataRecording))
+        {
+            Debug.LogError("ARWorldMapController world is null!");
+            return;
+        }
+        int session = GetSessionRecordingCountToWorld(worldNameForDataRecording) + 1;
+        string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_data_" + session + ".json");
+        writer = new StreamWriter(datapointFilePath, true);
+        Add1ToSessionRecordingCountToWorld(worldNameForDataRecording);
+    }
+
+    private void CloseFileStream()
+    {
+        print("closing stream");
+        worldNameForDataRecording = null;
+        writer.Close();
+    }
+
+    #endregion
+
+    #region Debug Functions
+
     public void PrintAllWorlds()
     {
         ARWorldList list = GetWorldList();
@@ -212,9 +245,10 @@ public class ARSaveDataManager : MonoBehaviour
     public void PrintAllWorldMaps()
     {
         DirectoryInfo info = new DirectoryInfo(Application.persistentDataPath);
+
         foreach(FileInfo file in info.EnumerateFiles())
         {
-            if (file.Extension.Contains("json") && file.Name.Contains("worldmaplist") == false)
+            if (file.Extension.Contains("json") && file.Name.Contains("worldmaplist") == false && !file.Name.Contains("data"))
             {
                 print("----objects in " + file.Name + " ----");
                 char[] splitter = {'.'};
@@ -247,4 +281,6 @@ public class ARSaveDataManager : MonoBehaviour
 
         print("done erasing all contents of persistent data path.");
     }
+
+    #endregion
 }

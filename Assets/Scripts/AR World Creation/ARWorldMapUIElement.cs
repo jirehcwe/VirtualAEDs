@@ -30,6 +30,6 @@ public class ARWorldMapUIElement : MonoBehaviour
     
     public void DeleteWorld()
     {
-        ARSaveDataManager.DeleteWorld(world);
+        ARSaveDataSystemIO.DeleteWorld(world);
     }
 }
