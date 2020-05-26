@@ -10,6 +10,11 @@ public struct ARDataPoint
         gaze = look;
         timeStamp = time;
     }
+
+    public void PrintSelf()
+    {
+        Debug.Log("Timestamp: " + timeStamp + " | Position: " + position + " | Rot: " + gaze);
+    }
     public Vector3 position;
     public Quaternion gaze;
     public float timeStamp;

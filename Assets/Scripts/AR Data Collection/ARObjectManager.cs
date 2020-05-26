@@ -128,4 +128,41 @@ public class ARObjectManager : MonoBehaviour
         objectDataList.Clear();
     
     }
+
+    public float GetFloorHeight()
+    {
+        float lowestHeight = -1; // # 0 is where the device starts (usually not floor height, but hand height)
+
+        if (objectDataList.Count < 1)
+        {
+            Debug.LogError("No objects found, object data list of ObjectManager is empty.");
+            return lowestHeight;
+        }
+
+
+        //Get first wall height
+        foreach(ARObjectMetadata metadata in objectDataList)
+        {
+            if (metadata.objectType == ARObjectType.Wall)
+            {
+                lowestHeight = metadata.position.y;
+                break;
+            }
+        }
+
+        //Find lowest wall height
+        foreach(ARObjectMetadata metadata in objectDataList)
+        {
+            if (metadata.objectType == ARObjectType.Wall)
+            {
+                if (metadata.position.y < lowestHeight)
+                {
+                    lowestHeight = metadata.position.y;
+                }
+            }
+            
+        }
+
+        return lowestHeight;
+    }
 }

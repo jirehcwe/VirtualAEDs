@@ -20,7 +20,6 @@ public class ARSaveDataSystemIO : MonoBehaviour
     {
         ARDataCollectionManager.StartDataRecording.AddListener(OpenFileStream);
         ARDataCollectionManager.StopDataRecording.AddListener(CloseFileStream);
-        print("event listeners added for save data manager");
     }
     
     private void OnDisable()
@@ -181,11 +180,26 @@ public class ARSaveDataSystemIO : MonoBehaviour
         return false;
     }
 
-    public static List<ARDataPoint> GetDataPoints(string worldName, int sessionNumber = 1)
+    public static List<ARDataPoint> GetDataPointsByWorldName(string worldName, int sessionNumber = 1)
     {
         worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
         string datapointFilePath = Path.Combine(Application.persistentDataPath, worldNameForDataRecording + "_data_" + sessionNumber + ".json");
         string[] datalines = File.ReadAllLines(datapointFilePath);
+        List<ARDataPoint> dataPoints = new List<ARDataPoint>();
+
+        //TODO make enumerator so we can frame it and show progress?
+        foreach (string datapoint in datalines)
+        {
+            dataPoints.Add(JsonUtility.FromJson<ARDataPoint>(datapoint));
+        }
+
+        return dataPoints;
+    }
+
+    public static List<ARDataPoint> GetDataPointsByPath(string path, int sessionNumber = 1)
+    {
+        worldNameForDataRecording = ARWorldMapController.currentActiveWorld;
+        string[] datalines = File.ReadAllLines(path);
         List<ARDataPoint> dataPoints = new List<ARDataPoint>();
 
         //TODO make enumerator so we can frame it and show progress?

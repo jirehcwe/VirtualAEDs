@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
-
-[RequireComponent(typeof (UnityEngine.UI.Image))]
+using UnityEngine.UIElements;
+[RequireComponent(typeof (Image))]
 public class ForcedReset : MonoBehaviour
 {
     private void Update()
