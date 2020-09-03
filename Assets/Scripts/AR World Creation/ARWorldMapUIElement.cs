@@ -10,6 +10,7 @@ public class ARWorldMapUIElement : MonoBehaviour
     public Button worldSelectButton;
 
     private ARWorldMapController mapController;
+    private ARWorldMapListDisplay worldMapListDisplay;
     
 
     void Start()
@@ -20,6 +21,8 @@ public class ARWorldMapUIElement : MonoBehaviour
         {
             Debug.LogError("No Map Controller Found!");
         }
+
+        worldMapListDisplay = FindObjectOfType<ARWorldMapListDisplay>();
     }
 
     public void LoadWorld()
@@ -31,5 +34,18 @@ public class ARWorldMapUIElement : MonoBehaviour
     public void DeleteWorld()
     {
         ARSaveDataSystemIO.DeleteWorld(world);
+    }
+
+    public void RefreshList()
+    {
+        bool isEditing = true;
+        if (worldMapListDisplay)
+        {
+            worldMapListDisplay.DisplayAllWorldMaps(isEditing);
+        } else
+        {
+            Debug.LogError("No world map list list display class found, can't refresh map list!");
+        }
+        
     }
 }

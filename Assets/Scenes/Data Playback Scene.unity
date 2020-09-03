@@ -1092,7 +1092,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Assets/World Data/Room.json
+          m_StringArgument: Assets/World Data/Pavillion test.json
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 365507179}
@@ -1103,7 +1103,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Assets/World Data/Room_data_1.json
+          m_StringArgument: Assets/World Data/Pavillion test_data_1.json
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1201766894
@@ -1511,7 +1511,7 @@ Transform:
   m_GameObject: {fileID: 1560905414}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -1534,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1676175940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1606,7 +1606,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Assets/World Data/Test.json
+          m_StringArgument: Assets/World Data/Pavillion test.json
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1676175942

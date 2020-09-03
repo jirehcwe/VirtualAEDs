@@ -32,7 +32,7 @@ public class ARDataCollectionManager : MonoBehaviour
         IsRecording = false;
     }
 
-    public static void RecordDataPoint(Vector3 position, Quaternion gaze, float timeStamp)
+    public static void RecordDataPoint(Vector3 position, Quaternion gaze, float timeStamp, ARDataPoint.AREventType newEvent)
     {
         if (string.IsNullOrEmpty(ARWorldMapController.currentActiveWorld))
         {
@@ -43,7 +43,7 @@ public class ARDataCollectionManager : MonoBehaviour
             WorldName = ARWorldMapController.currentActiveWorld;
         }
 
-        ARDataPoint point = new ARDataPoint(position, gaze, timeStamp);
+        ARDataPoint point = new ARDataPoint(position, gaze, timeStamp, newEvent);
         
 
 

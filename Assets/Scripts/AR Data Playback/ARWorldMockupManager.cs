@@ -67,5 +67,6 @@ public class ARWorldMockupManager : MonoBehaviour
     {
         ARDataPoint point = dataPoints[(int)datapointIndex];
         headsetInstance.transform.position = point.position;
+        headsetInstance.transform.rotation = point.gaze;
     }
 }

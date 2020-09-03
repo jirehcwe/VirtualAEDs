@@ -39,7 +39,8 @@ public class ARCursor : MonoBehaviour
     {
         if (isRecording)
         {
-            ARDataCollectionManager.RecordDataPoint(transform.position, transform.rotation, Time.fixedTime);
+            //TODO: add event types
+            ARDataCollectionManager.RecordDataPoint(transform.position, transform.rotation, Time.fixedTime, ARDataPoint.AREventType.NullEvent);
         }
     }
 
