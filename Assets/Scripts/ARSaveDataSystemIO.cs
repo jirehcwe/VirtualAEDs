@@ -270,10 +270,12 @@ public class ARSaveDataSystemIO : MonoBehaviour
                 ARWorldSaveData worldData = GetWorldByName(file.Name.Split(splitter)[0]);
                 if (worldData.ARObjectList != null)
                 {
+                    print("Cardiac arrest victim time: " + worldData.victimCardiacArrestWaitTime + "seconds");
                     foreach(ARObjectMetadata obj in worldData.ARObjectList)
                     {
                         print(obj.objectType + " " + obj.position);
                     }
+
                 }
                 print("----end of world data for " + file.Name + " ----");
             }

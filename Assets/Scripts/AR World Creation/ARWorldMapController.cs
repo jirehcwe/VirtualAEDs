@@ -180,7 +180,7 @@ public class ARWorldMapController : MonoBehaviour
         {
             objListCopy.Add(data.Copy());
         }
-        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList.ToArray());
+        ARWorldSaveData saveData = new ARWorldSaveData(currentActiveWorld, ARObjectManager.objectDataList.ToArray(), ARObjectManager.victimWaitTime);
         ARSaveDataSystemIO.SetWorldData(saveData);
     }
 

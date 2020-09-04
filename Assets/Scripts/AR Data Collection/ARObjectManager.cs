@@ -7,6 +7,7 @@ public class ARObjectManager : MonoBehaviour
     public static ARObjectManager Instance;
     public static List<ARObjectMetadata> objectDataList = new List<ARObjectMetadata>();
     public static List<GameObject> objReferencelist = new List<GameObject>();
+    public static int victimWaitTime = 5;
     public GameObject aedPrefab;
     public GameObject wallPrefab;
     public GameObject victimPrefab;
@@ -164,5 +165,10 @@ public class ARObjectManager : MonoBehaviour
         }
 
         return lowestHeight;
+    }
+
+    public void SetVictimWaitTime(float waitTime)
+    {
+        victimWaitTime = (int)waitTime;
     }
 }
