@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class ARObjectManager : MonoBehaviour
 {
@@ -64,12 +65,11 @@ public class ARObjectManager : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="worldName">Simple string name to search for AR World Object list.</param>
-    public void GenerateARObjectsFromDeviceMemory(string worldName)
+    public void GenerateARObjectsFromDeviceMemory(string worldName, bool isExperimenting = false)
     {
-
         ARWorldSaveData worldSaveData = ARSaveDataSystemIO.GetWorldByName(worldName);
         print("generating world: "  + worldName);
-        GenerateARObjects(worldSaveData.ARObjectList);
+        GenerateARObjects(worldSaveData.ARObjectList, isExperimenting);
     }
 
     public void GenerateARObjectsFromPath(string path)
@@ -79,7 +79,7 @@ public class ARObjectManager : MonoBehaviour
         GenerateARObjects(worldSaveData.ARObjectList);
     }
 
-    void GenerateARObjects(ARObjectMetadata[] objectMetadataList)
+    void GenerateARObjects(ARObjectMetadata[] objectMetadataList, bool isExperimenting = false)
     {
         
         ResetObjects();
@@ -113,6 +113,10 @@ public class ARObjectManager : MonoBehaviour
                 case ARObjectType.Victim:
                     Transform victim = Instantiate(victimPrefab, metadata.position, metadata.rotation).transform;
                     victim.localScale = metadata.scale;
+                    if (isExperimenting)
+                    {
+                        ARDataCollectionManager.StartDataRecording.AddListener(delegate{StartCoroutine(DelayedCardiacArrest(victim.GetComponent<ARVictim>()));});
+                    }
                     ARObjectManager.RegisterARObject(victim, ARObjectType.Victim);
                     break;
             }
@@ -170,5 +174,11 @@ public class ARObjectManager : MonoBehaviour
     public void SetVictimWaitTime(float waitTime)
     {
         victimWaitTime = (int)waitTime;
+    }
+
+    public IEnumerator DelayedCardiacArrest(ARVictim victim)
+    {
+        yield return new WaitForSeconds(victimWaitTime);
+        victim.TriggerCardiacArrest();
     }
 }

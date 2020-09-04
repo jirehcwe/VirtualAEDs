@@ -8,6 +8,7 @@ public class ARWorldMapUIElement : MonoBehaviour
 
     public Button worldDeleteButton;
     public Button worldSelectButton;
+    public bool isExperimenting = false;
 
     private ARWorldMapController mapController;
     private ARWorldMapListDisplay worldMapListDisplay;
@@ -28,7 +29,7 @@ public class ARWorldMapUIElement : MonoBehaviour
     public void LoadWorld()
     {
         ARWorldMapController.currentActiveWorld = world;
-        mapController.OnLoadButton();
+        mapController.OnLoadButton(isExperimenting);
     }
     
     public void DeleteWorld()

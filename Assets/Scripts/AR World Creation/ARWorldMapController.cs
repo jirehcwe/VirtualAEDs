@@ -26,6 +26,8 @@ public class ARWorldMapController : MonoBehaviour
     public GameObject victimPrefab;
     public GameObject wallPrefab;
     public ARPlaneManager planeManager;
+    
+    private bool isExperimenting = false;
 
     [Tooltip("The ARSession component controlling the session from which to generate ARWorldMaps.")]
     [SerializeField]
@@ -132,8 +134,9 @@ public class ARWorldMapController : MonoBehaviour
     /// Load an <c>ARWorldMap</c> from disk and apply it
     /// to the current session.
     /// </summary>
-    public void OnLoadButton()
+    public void OnLoadButton(bool isExp = false)
     {
+        isExperimenting = isExp;
 #if UNITY_IOS
         StartCoroutine(Load());
 #endif
@@ -236,7 +239,7 @@ public class ARWorldMapController : MonoBehaviour
         Log("Apply ARWorldMap to current session.");
         sessionSubsystem.ApplyWorldMap(worldMap);
         OnResetButton();
-        ARObjectManager.Instance.GenerateARObjectsFromDeviceMemory(currentActiveWorld);
+        ARObjectManager.Instance.GenerateARObjectsFromDeviceMemory(currentActiveWorld, isExperimenting);
     }
 
     void SaveAndDisposeWorldMap(ARWorldMap worldMap)

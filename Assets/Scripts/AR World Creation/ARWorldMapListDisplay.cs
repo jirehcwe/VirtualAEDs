@@ -53,6 +53,7 @@ public class ARWorldMapListDisplay : MonoBehaviour
                 CanvasEnableForWorldEditing(worldMapUIElement.worldSelectButton);
             } else
             {
+                worldMapUIElement.isExperimenting = true;
                 CanvasEnableForTesting(worldMapUIElement.worldSelectButton);
             }
         }

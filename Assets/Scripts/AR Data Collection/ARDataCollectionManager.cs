@@ -66,6 +66,7 @@ public class ARDataCollectionManager : MonoBehaviour
     public void StartRecording()
     {
         print("invoking " + StartDataRecording.GetPersistentEventCount() + " start events");
+        
         StartDataRecording.Invoke();
     }
 
