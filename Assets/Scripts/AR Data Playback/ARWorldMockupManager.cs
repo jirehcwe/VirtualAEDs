@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.XR;
@@ -58,7 +59,7 @@ public class ARWorldMockupManager : MonoBehaviour
     public void LoadWorldTimelineFromPath(string path)
     {
         dataPoints = ARSaveDataSystemIO.GetDataPointsByPath(path);
-        timelineScrubber.SetSliderNumPoints(dataPoints.Count);
+        timelineScrubber.SetupSlider(GetEventList(dataPoints), dataPoints.Count);
         ScrubToCurrentDataPoint(0);
         print("Floor height: " + ARObjectManager.Instance.GetFloorHeight());
         floorPlane.position = new Vector3(floorPlane.position.x, ARObjectManager.Instance.GetFloorHeight(), floorPlane.position.z);
@@ -83,5 +84,13 @@ public class ARWorldMockupManager : MonoBehaviour
                 break;
                     
         }
+    }
+
+    private List<(int, ARDataPoint.AREventType)> GetEventList(List<ARDataPoint> dataPoints)
+    {
+        return dataPoints.Select((point, index) => (index, point.arEventType))
+                         .Where( tuple => tuple.arEventType != ARDataPoint.AREventType.NullEvent)
+                         .ToList();
+        
     }
 }
