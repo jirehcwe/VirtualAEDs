@@ -19,6 +19,7 @@ public class ARWorldMockupManager : MonoBehaviour
     List<ARDataPoint> dataPoints;
     GameObject headsetPrefab;
     GameObject headsetInstance;
+    ARVictim victimInstance;
     #endregion
 
     private void OnDisable()
@@ -61,12 +62,26 @@ public class ARWorldMockupManager : MonoBehaviour
         ScrubToCurrentDataPoint(0);
         print("Floor height: " + ARObjectManager.Instance.GetFloorHeight());
         floorPlane.position = new Vector3(floorPlane.position.x, ARObjectManager.Instance.GetFloorHeight(), floorPlane.position.z);
+        victimInstance = ARObjectManager.objReferencelist.Find( obj => obj.GetComponent<ARVictim>() != null).GetComponent<ARVictim>();
     }
 
     public void ScrubToCurrentDataPoint(float datapointIndex)
     {
         ARDataPoint point = dataPoints[(int)datapointIndex];
-        headsetInstance.transform.position = point.position;
-        headsetInstance.transform.rotation = point.gaze;
+        switch (point.arEventType)
+        {
+            case ARDataPoint.AREventType.NullEvent:
+                headsetInstance.transform.position = point.position;
+                headsetInstance.transform.rotation = point.gaze;
+                break;
+            case ARDataPoint.AREventType.CardiacArrestEvent:
+                victimInstance.TriggerCardiacArrest();
+                break;
+            case ARDataPoint.AREventType.AEDPickupEvent:
+                break;
+            case ARDataPoint.AREventType.ReachVictimWithAEDEvent:
+                break;
+                    
+        }
     }
 }

@@ -180,5 +180,6 @@ public class ARObjectManager : MonoBehaviour
     {
         yield return new WaitForSeconds(victimWaitTime);
         victim.TriggerCardiacArrest();
+        ARDataCollectionManager.RecordDataPoint(victim.transform.position, Quaternion.identity, Time.fixedTime, ARDataPoint.AREventType.CardiacArrestEvent);
     }
 }
