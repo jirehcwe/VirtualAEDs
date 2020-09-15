@@ -6,6 +6,7 @@ public class ARCursor : MonoBehaviour
     #region Public Fields
     public GameObject cursorPrefab;
     public float maxCursorRange = 20;
+    public bool hasPickedUpAED = false;
     public Vector3 position;
     public Transform other;
     public Vector3 hitNormal;
@@ -21,13 +22,18 @@ public class ARCursor : MonoBehaviour
         ARDataCollectionManager.StartDataRecording.RemoveListener(StartRecordCursor);
         ARDataCollectionManager.StopDataRecording.RemoveListener(EndRecordCursor);
     }
+    
 
     void Start()
     {
         SetupCursorObject();
         ARDataCollectionManager.StartDataRecording.AddListener(StartRecordCursor);
         ARDataCollectionManager.StopDataRecording.AddListener(EndRecordCursor);
-        print("added listener for cursor");
+    }
+
+    public void PickUpAED()
+    {
+        hasPickedUpAED = true;
     }
 
     void Update()
@@ -99,4 +105,6 @@ public class ARCursor : MonoBehaviour
         print("end recording from cursor");
         isRecording = false;
     }
+
+
 }

@@ -34,46 +34,47 @@ public class ARDataCollectionManager : MonoBehaviour
 
     public static void RecordDataPoint(Vector3 position, Quaternion gaze, float timeStamp, ARDataPoint.AREventType newEvent)
     {
-        if (string.IsNullOrEmpty(ARWorldMapController.currentActiveWorld))
+        if (IsRecording)
         {
-            Debug.LogError("World name is null or missing!");
-            return;
-        }else
-        {
-            WorldName = ARWorldMapController.currentActiveWorld;
-        }
+            if (string.IsNullOrEmpty(ARWorldMapController.currentActiveWorld))
+            {
+                Debug.LogError("World name is null or missing!");
+                return;
+            } else {
+                WorldName = ARWorldMapController.currentActiveWorld;
+            }
 
-        ARDataPoint point = new ARDataPoint(position, gaze, timeStamp, newEvent);
+            ARDataPoint point = new ARDataPoint(position, gaze, timeStamp, newEvent);
         
-
-
-        if (Instance.isDiscreteSaveOperation)
-        {
-            PushDataPointToFile(WorldName, point);
-        } else if (dataPoints.Count > 1/Time.fixedDeltaTime)
-        {
-            Debug.LogError("NOT DONE YET");
-            ARDataPoint[] copy = new ARDataPoint[dataPoints.Count];
-            dataPoints.CopyTo(copy);
-            PushDataListToFile(WorldName, copy);
-            dataPoints.Clear();
-        } else {
-            dataPoints.Add(point);
+            if (Instance.isDiscreteSaveOperation)
+            {
+                PushDataPointToFile(WorldName, point);
+            } else if (dataPoints.Count > 1/Time.fixedDeltaTime)
+            {
+                Debug.LogError("NOT DONE YET");
+                ARDataPoint[] copy = new ARDataPoint[dataPoints.Count];
+                dataPoints.CopyTo(copy);
+                PushDataListToFile(WorldName, copy);
+                dataPoints.Clear();
+            } else {
+                dataPoints.Add(point);
+            }
         }
+        
 
     }
     
     public void StartRecording()
     {
         print("invoking " + StartDataRecording.GetPersistentEventCount() + " start events");
-        
+        IsRecording = true;
         StartDataRecording.Invoke();
     }
 
     public void StopRecording()
     {
         print("invoking " + StopDataRecording.GetPersistentEventCount() + " stop events");
-        
+        IsRecording = false;
         StopDataRecording.Invoke();
     }
 
