@@ -6,7 +6,10 @@ public class ARCursor : MonoBehaviour
     #region Public Fields
     public GameObject cursorPrefab;
     public float maxCursorRange = 20;
-    public bool hasPickedUpAED = false;
+    public bool hasPickedUpAED
+    {
+        get; private set;
+    }
     public Vector3 position;
     public Transform other;
     public Vector3 hitNormal;

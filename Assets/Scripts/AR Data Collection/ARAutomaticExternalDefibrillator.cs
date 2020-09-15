@@ -20,7 +20,6 @@ public class ARAutomaticExternalDefibrillator : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.name);
         if (other.gameObject.tag == "Player")
         {
             if (timeInProximity < REQUIRED_PICKUP_TIME_SECONDS)
@@ -39,7 +38,6 @@ public class ARAutomaticExternalDefibrillator : MonoBehaviour
 
     private void OnTriggerExit(Collider other) 
     {
-        Debug.Log(other.name);
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("Left AED point");
@@ -49,8 +47,6 @@ public class ARAutomaticExternalDefibrillator : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
-        Debug.Log(other.name);
-
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("Entered AED point");

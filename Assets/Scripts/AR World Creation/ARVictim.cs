@@ -7,12 +7,14 @@ public class ARVictim : MonoBehaviour
 
     #region Public Fields
     public Animator victimAnimator;
-
+    public float REQUIRED_PROXIMITY_TIME_SECONDS = 3;
     #endregion
 
     #region Private Fields
     private static ARVictim instance;
     private MeshCollider meshCollider;
+    private float timeInProximity;
+    
     #endregion
 
     void Start()
@@ -44,6 +46,7 @@ public class ARVictim : MonoBehaviour
         SkinnedMeshRenderer[] smrArray = this.transform.GetChild(0).GetComponentsInChildren<SkinnedMeshRenderer>();
 
         CombineInstance[] combinedInstances = new CombineInstance[smrArray.Length];
+        Matrix4x4 parentMatrix = transform.worldToLocalMatrix;
         
         for (int i = 0; i < combinedInstances.Length; i++)
         {
@@ -51,7 +54,7 @@ public class ARVictim : MonoBehaviour
             smrArray[i].BakeMesh(bakedMesh);
 
             combinedInstances[i].mesh = bakedMesh;
-            combinedInstances[i].transform = smrArray[i].transform.localToWorldMatrix;
+            combinedInstances[i].transform = parentMatrix * smrArray[i].transform.localToWorldMatrix;
         }
 
         Mesh combinedMesh = new Mesh();
@@ -65,6 +68,44 @@ public class ARVictim : MonoBehaviour
         yield return new WaitForSeconds(3);
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = CombineMeshes();
+        print(meshCollider.bounds);
         yield return null;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        print(other.gameObject.name);
+        if (other.gameObject.tag == "Player")
+        {
+            if (other.GetComponent<ARCursor>().hasPickedUpAED){
+                if (timeInProximity < REQUIRED_PROXIMITY_TIME_SECONDS)
+                {
+                    timeInProximity += Time.fixedDeltaTime;
+                } else {
+                    ARDataCollectionManager.RecordDataPoint(this.transform.position, this.transform.rotation, Time.fixedTime, ARDataPoint.AREventType.ReachVictimWithAEDEvent);
+                    timeInProximity = 0;
+                    Debug.Log("AED applied");
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        print(other.gameObject.name);
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("Left victim");
+            timeInProximity = 0;       
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        print(other.gameObject.name);
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("Approached victim");
+        }
     }
 }

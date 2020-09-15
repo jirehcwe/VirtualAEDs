@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   victimAnimator: {fileID: 0}
+  REQUIRED_PROXIMITY_TIME_SECONDS: 3
 --- !u!64 &1599261565645395776
 MeshCollider:
   m_ObjectHideFlags: 0
