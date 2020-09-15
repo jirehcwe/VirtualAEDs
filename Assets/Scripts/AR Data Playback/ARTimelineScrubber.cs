@@ -8,6 +8,9 @@ public class ARTimelineScrubber : MonoBehaviour
 {
 
     #region Public Fields
+        public Color cardiacArrestEventColor;
+        public Color pickupAEDEventColor;
+        public Color reachVictimWithAEDEventColor;
     #endregion
 
     #region Private Fields
@@ -48,37 +51,22 @@ public class ARTimelineScrubber : MonoBehaviour
         float xStartPos = eventButtonPrefab.GetComponent<RectTransform>().rect.width/2;
         float xEndPos = rectTrans.rect.width - xStartPos;
         float yPos = rectTrans.rect.height * 1.5f;
-        // Do markers.
+        
+
         foreach(var arEvent in eventList)
         {   
-            switch(arEvent.eventType)
+            if (arEvent.eventType != ARDataPoint.AREventType.NullEvent)
             {
-                case ARDataPoint.AREventType.NullEvent:
-                    break;
-                case ARDataPoint.AREventType.CardiacArrestEvent:
-                    GameObject eventButton = Instantiate(eventButtonPrefab, this.transform);
-                    RectTransform buttonRect = eventButton.GetComponent<RectTransform>();
-                    float relativeXpos = xStartPos + (xEndPos-xStartPos)*((float)arEvent.index/(float)numDataPoints);
-                    buttonRect.anchoredPosition = new Vector2(relativeXpos, yPos);
-                    eventButton.GetComponent<Button>().onClick.AddListener(delegate
-                                                                                    {
-                                                                                        timelineSlider.value = arEvent.index;
-                                                                                    }
-                                                                            );
-                    break;
-                case ARDataPoint.AREventType.AEDPickupEvent:
-                    break;
-                case ARDataPoint.AREventType.ReachVictimWithAEDEvent:
-                    break;
+                float relativeXpos = xStartPos + (xEndPos-xStartPos)*((float)arEvent.index/(float)numDataPoints);
+                CreateEventButton(arEvent.index, arEvent.eventType, relativeXpos, yPos);
             }
         }
         SetSliderNumPoints(numDataPoints);
-        
     }
 
     public void SetSliderNumPoints(int numDataPoints)
     {
-        timelineSlider.maxValue = numDataPoints - 1; //0-indexed
+        timelineSlider.maxValue = numDataPoints - 1;
         timelineSlider.minValue = 0;
     }
 
@@ -95,6 +83,33 @@ public class ARTimelineScrubber : MonoBehaviour
     public void TogglePlayPause()
     {
         shouldPlay = !shouldPlay;
+    }
+
+    private void CreateEventButton(int eventIndex, ARDataPoint.AREventType eventType, float relativeXpos, float relativeYpos)
+    {
+        GameObject eventButton = Instantiate(eventButtonPrefab, this.transform);
+        RectTransform buttonRect = eventButton.GetComponent<RectTransform>();
+        buttonRect.anchoredPosition = new Vector2(relativeXpos, relativeYpos);
+        eventButton.GetComponent<Button>().onClick.AddListener(delegate
+                                                                        {
+                                                                            timelineSlider.value = eventIndex;
+                                                                        }
+                                                                );
+        Image eventButtonImage = eventButton.GetComponent<Image>();    
+
+        switch(eventType)
+        {
+            case ARDataPoint.AREventType.CardiacArrestEvent:
+                eventButtonImage.color = cardiacArrestEventColor;
+                break;
+            case ARDataPoint.AREventType.AEDPickupEvent:
+                eventButtonImage.color = pickupAEDEventColor;
+                break;
+            case ARDataPoint.AREventType.ReachVictimWithAEDEvent:
+                eventButtonImage.color = reachVictimWithAEDEventColor;
+                break;
+                    
+        }
     }
 
 }

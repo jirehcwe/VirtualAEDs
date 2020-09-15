@@ -77,14 +77,14 @@ public class ARVictim : MonoBehaviour
         print(other.gameObject.name);
         if (other.gameObject.tag == "Player")
         {
-            if (other.GetComponent<ARCursor>().hasPickedUpAED){
+            if (other.GetComponent<ARCursor>().hasPickedUpAED && victimAnimator.GetBool("doCardiacArrest")){
                 if (timeInProximity < REQUIRED_PROXIMITY_TIME_SECONDS)
                 {
                     timeInProximity += Time.fixedDeltaTime;
                 } else {
                     ARDataCollectionManager.RecordDataPoint(this.transform.position, this.transform.rotation, Time.fixedTime, ARDataPoint.AREventType.ReachVictimWithAEDEvent);
                     timeInProximity = 0;
-                    Debug.Log("AED applied");
+                    ToggleCardiacArrest();
                 }
             }
         }
@@ -92,17 +92,14 @@ public class ARVictim : MonoBehaviour
 
     private void OnTriggerExit(Collider other) 
     {
-        print(other.gameObject.name);
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("Left victim");
             timeInProximity = 0;       
         }
     }
 
     private void OnTriggerEnter(Collider other) 
     {
-        print(other.gameObject.name);
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("Approached victim");
