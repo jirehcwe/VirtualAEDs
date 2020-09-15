@@ -61,7 +61,6 @@ public class ARWorldMockupManager : MonoBehaviour
         dataPoints = ARSaveDataSystemIO.GetDataPointsByPath(path);
         timelineScrubber.SetupSlider(GetEventList(dataPoints), dataPoints.Count);
         ScrubToCurrentDataPoint(0);
-        print("Floor height: " + ARObjectManager.Instance.GetFloorHeight());
         floorPlane.position = new Vector3(floorPlane.position.x, ARObjectManager.Instance.GetFloorHeight(), floorPlane.position.z);
         victimInstance = ARObjectManager.objReferencelist.Find( obj => obj.GetComponent<ARVictim>() != null).GetComponent<ARVictim>();
     }

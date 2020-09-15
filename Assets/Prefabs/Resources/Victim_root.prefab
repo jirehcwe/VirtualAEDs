@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1608005192663943472}
   - component: {fileID: 2599999939112832223}
+  - component: {fileID: 1599261565645395776}
   m_Layer: 0
   m_Name: Victim_root
   m_TagString: Untagged
@@ -45,6 +46,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   victimAnimator: {fileID: 0}
+--- !u!64 &1599261565645395776
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608005192663943473}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!95 &1608005193810029418
 Animator:
   serializedVersion: 3

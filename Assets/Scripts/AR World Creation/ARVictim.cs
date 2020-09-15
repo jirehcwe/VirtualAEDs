@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 public class ARVictim : MonoBehaviour
 {
@@ -30,6 +32,7 @@ public class ARVictim : MonoBehaviour
 
     public void TriggerCardiacArrest(){
         victimAnimator.SetBool("doCardiacArrest", true);
+        StartCoroutine(SetCardiacPoseMesh());
     }
 
     public void ToggleCardiacArrest(){
@@ -38,11 +41,30 @@ public class ARVictim : MonoBehaviour
     
     private Mesh CombineMeshes()
     {   
-        foreach (SkinnedMeshRenderer skinnedMeshRenderer in this.transform.GetChild(0).GetComponentsInChildren<SkinnedMeshRenderer>())
+        SkinnedMeshRenderer[] smrArray = this.transform.GetChild(0).GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        CombineInstance[] combinedInstances = new CombineInstance[smrArray.Length];
+        
+        for (int i = 0; i < combinedInstances.Length; i++)
         {
-            //TODO: get mesh and combine.
+            Mesh bakedMesh = new Mesh();
+            smrArray[i].BakeMesh(bakedMesh);
+
+            combinedInstances[i].mesh = bakedMesh;
+            combinedInstances[i].transform = smrArray[i].transform.localToWorldMatrix;
         }
 
-        return null;
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.name = "Combined Mesh";
+        combinedMesh.CombineMeshes(combinedInstances, true);
+        return combinedMesh;
+    }
+
+    private IEnumerator SetCardiacPoseMesh()
+    {
+        yield return new WaitForSeconds(3);
+        meshCollider.sharedMesh = null;
+        meshCollider.sharedMesh = CombineMeshes();
+        yield return null;
     }
 }

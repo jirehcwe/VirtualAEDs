@@ -48,7 +48,6 @@ public class ARTimelineScrubber : MonoBehaviour
         float xStartPos = eventButtonPrefab.GetComponent<RectTransform>().rect.width/2;
         float xEndPos = rectTrans.rect.width - xStartPos;
         float yPos = rectTrans.rect.height * 1.5f;
-        print(string.Format("Xstart: {0}. Xend: {1}, ypos: {2}", xStartPos, xEndPos, yPos));
         // Do markers.
         foreach(var arEvent in eventList)
         {   
