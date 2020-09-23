@@ -39,6 +39,11 @@ public class ARCursor : MonoBehaviour
         hasPickedUpAED = true;
     }
 
+    public void UseUpAED()
+    {
+        hasPickedUpAED = false;
+    }
+
     void Update()
     {
         UpdateCursorPosition();

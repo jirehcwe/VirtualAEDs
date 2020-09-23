@@ -700,6 +700,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd633e8b746c040c5bea6f46bf2d805a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardiacArrestEventColor: {r: 1, g: 0, b: 0.039559364, a: 1}
+  pickupAEDEventColor: {r: 0, g: 1, b: 0.12074661, a: 1}
+  reachVictimWithAEDEventColor: {r: 0, g: 0.7249274, b: 1, a: 1}
 --- !u!1 &816106993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,7 +1095,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Assets/World Data/Event test.json
+          m_StringArgument: Assets/World Data/Full event test 2.json
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 365507179}
@@ -1103,7 +1106,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Assets/World Data/Event test_data_1.json
+          m_StringArgument: Assets/World Data/Full event test 2_data_5.json
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1201766894

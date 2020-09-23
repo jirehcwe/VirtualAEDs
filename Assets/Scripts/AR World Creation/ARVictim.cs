@@ -85,6 +85,7 @@ public class ARVictim : MonoBehaviour
                     ARDataCollectionManager.RecordDataPoint(this.transform.position, this.transform.rotation, Time.fixedTime, ARDataPoint.AREventType.ReachVictimWithAEDEvent);
                     timeInProximity = 0;
                     ToggleCardiacArrest();
+                    other.GetComponent<ARCursor>().UseUpAED();
                 }
             }
         }
